@@ -1,0 +1,62 @@
+body {
+margin: 0;
+padding: 0;
+         line-height: 1.7em;
+         font-family: Verdana, Arial, Helvetica, sans-serif;
+         font-size: 12px;
+background: #F2F2F2;
+}
+
+a:link {
+color: #0066AA;
+       text-decoration: none;
+  }
+
+a:visited {
+color: #0066AA;
+       text-decoration: none;
+  }
+
+a:active {
+color: #CC0066;
+       text-decoration: underline;
+  }
+
+a:hover {
+color: #CC0066;
+       text-decoration: underline;
+  }
+
+p {
+        font-size: 13px;
+}
+
+b {
+        font-size: 110%;
+}
+
+em {
+color: red;
+}
+
+table  {
+    border-spacing: 0;
+    width: 200px;
+    height: 200px;
+}
+
+td {
+    border-style:solid;
+    border-width:0px;
+    border-color:#ccc;
+    color:#333;
+    text-align: center;
+    vertical-align:top
+}
+.td_equal_relative {
+    width:20px; 
+    height:20px;
+    
+}
+
+

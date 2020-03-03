@@ -6,16 +6,24 @@ layout.txt
 abcdefghij  - bots
 ABCDEFGHIJ  - bots that have eaten fruit
 """
+import json
+import os
 
 ENEMIES = list("abcdefghij")
 
 def main():
+    global bot_data
     with open("layout.txt", "r") as mapfile:
         layout = mapfile.readlines()
+    
+    student_number = os.path.abspath(__file__).split(os.sep)[-2].upper()
+    with open("{0}/{0}.json".format(student_number), "r") as statsfile:
+        bot_data = json.load(statsfile)
+
     print(get_move(layout))
 
-
 def get_move(layout):
+    global bot_data
     fruit = []
     enemies = []
     food = []
@@ -24,8 +32,7 @@ def get_move(layout):
     # For the basic move, simply try to go towards the fruit
     for c, col in enumerate(layout):
         for r, item in enumerate(col):
-            #print(item, end=" ")
-            if item == "a":
+            if item == bot_data['default_icon']:
                 bot = (r, c)
 
             elif item == "#":
@@ -39,14 +46,23 @@ def get_move(layout):
 
             elif item in ENEMIES:
                 enemies.append((r, c))  
-     
-    if fruit[0][0] < bot[0]:
+    # Figure out the closest fruit:
+    closest = fruit[0]
+    closest_dist = abs(bot[0] - closest[0]) + abs(bot[1] - closest[1])
+    for f in fruit:
+        dist = abs(bot[0] - f[0]) + abs(bot[1] - f[1])
+        if dist < closest_dist:
+            closest = f
+            closest_dist = dist
+
+
+    if closest[0] < bot[0]:
         return "l"
-    elif fruit[0][0] > bot[0]:
+    elif closest[0] > bot[0]:
         return "r"
-    elif fruit[0][1] < bot[1]:
+    elif closest[1] < bot[1]:
         return "u"
-    elif fruit[0][1] > bot[1]:
+    elif closest[1] > bot[1]:
         return "d"
     else:
         return ""

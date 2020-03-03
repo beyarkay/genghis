@@ -1,10 +1,30 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Welcome to Genghis</title>
+        <link rel="stylesheet" href="styles.css">
+        <title>Genghis Battle System</title>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     </head>
     <body>
-	<h1>CS Genghis System</h1>
-        <p>Work in progress<p>
+        <div></div>
+    
+    
+    <script>
+        let interval = 250
+        $.ajaxSetup ({
+            // Disable caching of AJAX responses
+                cache: false
+        });
+        function loadMap() {
+            console.log("Loading file");
+            $("div").load("https://people.cs.uct.ac.za/~KNXBOY001/genghis/map.html");
+            console.log("File Loaded")
+            setTimeout(loadMap, interval);
+        }
+        setTimeout(loadMap, interval);
+    </script>
     </body>
+
+    
+
 </html>
