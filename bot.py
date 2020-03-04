@@ -32,7 +32,7 @@ def get_move(layout):
     # For the basic move, simply try to go towards the fruit
     for c, col in enumerate(layout):
         for r, item in enumerate(col):
-            if item == bot_data['default_icon']:
+            if item.lower() == bot_data['default_icon']:
                 bot = (r, c)
 
             elif item == "#":

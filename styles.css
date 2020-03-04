@@ -40,23 +40,25 @@ color: red;
 }
 
 table  {
-    border-spacing: 0;
-    width: 200px;
-    height: 200px;
+        border-spacing: 0;
+width: 200px;
+height: 200px;
 }
 
 td {
-    border-style:solid;
-    border-width:0px;
-    border-color:#ccc;
-    color:#333;
-    text-align: center;
-    vertical-align:top
+        border-style:solid;
+        border-width:0px;
+        border-color:#ccc;
+color:#333;
+      text-align: center;
+      vertical-align:top
 }
 .td_equal_relative {
     width:20px; 
     height:20px;
-    
 }
 
-
+#wrapper {
+    width: 100%;
+    margin: 0 auto; /* center */
+}

@@ -1,8 +1,3 @@
-"""
-1. Collect two robot scripts
-2. paste the scripts into two separate directories
-3. Run the scripts one after the other
-"""
 import os
 import subprocess
 import random
@@ -75,6 +70,7 @@ def run():
                 mapfile.writelines(["".join(list(i)) + "\n" for i in zip(*layout)] )
             update_html()
         print("\n".join(["".join(list(i)) for i in zip(*layout)]))
+
 def step(student_number):
     result = subprocess.run(["python3", os.path.join(student_number, "bot.py")], stdout=subprocess.PIPE)
     cmd = str(result.stdout, encoding='utf8').strip()
@@ -99,11 +95,14 @@ def execute_cmd(student_number, cmd):
         (cmd == "r" and bot[0] + 1 < len(layout)) or \
         (cmd == "u" and bot[1] - 1 >= 0) or \
         (cmd == "d" and bot[1] + 1 < len(layout[0])):
+
         if get_cell(layout, bot, cmd) == ICON_AIR:
             move_bot(layout, bot, cmd, bot_data['default_icon'])
         elif get_cell(layout, bot, cmd) == ICON_FRUIT:
             move_bot(layout, bot, cmd, bot_data['default_icon'])
             add_fruit(layout)
+
+
 
 def get_cell(layout, bot, cmd):
     cmd_dict = {
@@ -158,8 +157,10 @@ def update_html():
 
     # TODO this may give troubles with file reading permissions
     host = os.path.abspath('../..').split(os.sep)[-1].upper() 
+    host = "<a href=\"https://people.cs.uct.ac.za/~"+host+"/genghis/\">" + host + "</a>"
 
     bots = [arg + " as " + icon for arg, icon in zip(sys.argv[1:], ICON_BOTS)]
+    bots = ["<a href=\"https://people.cs.uct.ac.za/~"+arg+"/genghis/\">" + arg + "</a> as " + icon for arg, icon in zip(sys.argv[1:], ICON_BOTS)]
 
     html = html.replace("{{tbody}}", tbody)
     html = html.replace("{{host}}", host)
