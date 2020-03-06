@@ -24,7 +24,7 @@ ICON_SOFT = sum([ICON_BOTS, [ICON_FOOD], [ICON_FRUIT]], [])
 
 def main():
     global layout
-    with open("layout.txt", "r") as mapfile:
+    with open("layout_template.txt", "r") as mapfile:
         layout = [line.strip() for line in mapfile.readlines()]
     layout = [list(i) for i in zip(*layout)]
     for i, arg in enumerate(sys.argv[1:]):
@@ -43,7 +43,7 @@ def main():
         # Write all the required files to the bot's directory
         with open("{}/bot.py".format(arg), "w+") as botfile:
             botfile.write(bot)
-        copy("layout.txt", "{}/layout.txt".format(arg))
+        copy("layout_template.txt", "{}/layout.txt".format(arg))
         
         bot_data = {
             "default_icon": ICON_BOTS[i],
@@ -141,7 +141,7 @@ def check_is_over():
     return count > 100
 
 def update_html():
-    with open("template.html", "r") as templatefile:
+    with open("map_template.html", "r") as templatefile:
         html = "\n".join(templatefile.readlines())
     
     tbody = "<tbody>"
