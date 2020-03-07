@@ -1,15 +1,6 @@
-"""
-layout.txt
-#           - a wall
-.           - food
-@           - fruit
-abcdefghij  - bots
-ABCDEFGHIJ  - bots that have eaten fruit
-"""
 import json
 import os
 
-ENEMIES = list("abcdefghij")
 
 def main():
     global bot_data
@@ -25,7 +16,6 @@ def main():
 def get_move(layout):
     global bot_data
     fruit = []
-    enemies = []
     food = []
     walls = []
     bot = (None, None)
@@ -35,17 +25,15 @@ def get_move(layout):
             if item.lower() == bot_data['default_icon']:
                 bot = (r, c)
 
-            elif item == "#":
-                walls.append((r, c))
-
             elif item == ".":
                 food.append((r, c))
 
             elif item == "@":
                 fruit.append((r, c))
-
-            elif item in ENEMIES:
-                enemies.append((r, c))  
+           
+            elif item == "#" or item != " ":
+                walls.append((r, c))
+            
     # Figure out the closest fruit:
     closest = fruit[0]
     closest_dist = abs(bot[0] - closest[0]) + abs(bot[1] - closest[1])

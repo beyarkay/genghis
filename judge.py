@@ -19,6 +19,7 @@ ICON_BOTS = list("abcdefghijklmnopqrstuvwxyz")
 ICON_FOOD = '.'
 ICON_FRUIT = '@'
 ICON_SOLID = '#'
+ICON_PORT = [str(i) for i in list(range(0, 20))]
 ICON_AIR = ' '
 ICON_SOFT = sum([ICON_BOTS, [ICON_FOOD], [ICON_FRUIT]], [])
 
@@ -91,17 +92,22 @@ def execute_cmd(student_number, cmd):
         if bot[0] and bot[1]:
             break
 
+    # Check if the move is legal
     if (cmd == "l" and bot[0] - 1 >= 0) or \
         (cmd == "r" and bot[0] + 1 < len(layout)) or \
         (cmd == "u" and bot[1] - 1 >= 0) or \
         (cmd == "d" and bot[1] + 1 < len(layout[0])):
 
+        # Process the move, checking to see if the bot will collide with anything of interest
         if get_cell(layout, bot, cmd) == ICON_AIR:
             move_bot(layout, bot, cmd, bot_data['default_icon'])
+        
         elif get_cell(layout, bot, cmd) == ICON_FRUIT:
             move_bot(layout, bot, cmd, bot_data['default_icon'])
             add_fruit(layout)
 
+        elif get_cell(layout, bot, cmd) in ICON_PORT:
+            port_bot(bot, bot_data['default_icon'])
 
 
 def get_cell(layout, bot, cmd):
@@ -133,6 +139,16 @@ def add_fruit(layout):
         if get_cell(layout, location, "") == ICON_AIR:
             layout[location[0]][location[1]] = ICON_FRUIT
             break
+
+def port_bot(bot, curr_bot_icon):
+    content = {"some":"data"}
+    r = requests.post(
+        "https://people.cs.uct.ac.za/~{}/genghis/bouncer.py".format(arg),
+        json=content
+                    
+    ) 
+    print(r.status_code)
+    print(r.text)
 
 
 def check_is_over():
