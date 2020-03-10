@@ -1,54 +1,41 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
-import socketserver
+import requests 
+import sys
+import re
+import os
 import json
-import cgi
+from shutil import copy
 
-class Server(BaseHTTPRequestHandler):
-    def _set_headers(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json')
-        self.end_headers()
+def main():
+    if re.match(r"^[bcdfghjklmnpqrstvwxyz]{3}\w{3}\d{3}$", sys.argv[1].replace("'","").lower()):
+        arg = sys.argv[1]
+    else:
+        print("Error, '" +sys.argv[1]+ "' doesn't match regex")
+        return
+    print("Creating ./bots/{}/".format(arg))
+    if not os.path.exists("bots/" + arg):
+        os.mkdir("bots/"+arg)
+    r = requests.get("https://people.cs.uct.ac.za/~{}/genghis/bot.py".format(arg)) 
+    print(r)
+    if r.ok:
+        bot = r.text
+    else:
+        bot = requests.get("https://people.cs.uct.ac.za/~{}/ghengis/bot.py".format(arg)).text
 
-    def do_HEAD(self):
-        self._set_headers()
 
-    # GET sends back a Hello world message
-    def do_GET(self):
-        self._set_headers()
-        self.wfile.write(json.dumps({'hello': 'world', 'received': 'ok'}))
+    # Write all the required files to the bot's directory
+    with open("bots/{}/bot.py".format(arg), "w+") as botfile:
+        botfile.write(bot)
+    copy("layout_template.txt", "bots/{}/layout.txt".format(arg))
+    
+    bot_data = {
+        "default_icon": "",
+        "state": 0,
+        "score":0,
+        "student_number": arg
+    }
+    with open("bots/{0}/{0}.json".format(arg), "w+") as statsfile:
+        json.dump(bot_data, statsfile)
 
-    # POST echoes the message adding a JSON field
-    def do_POST(self):
-        ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
-
-        # refuse to receive non-json content
-        if ctype != 'application/json':
-            self.send_response(400)
-            self.end_headers()
-            return
-
-        # read the message and convert it into a python dictionary
-        length = int(self.headers.getheader('content-length'))
-        message = json.loads(self.rfile.read(length))
-
-        # add a property to the object, just to mess with data
-        message['received'] = 'ok'
-
-        # send the message back
-        self._set_headers()
-        self.wfile.write(json.dumps(message))
-
-    def run(server_class=HTTPServer, handler_class=self, port=8008):
-        server_address = ('', port)
-        httpd = server_class(server_address, handler_class)
-
-        print('Starting httpd on port %d...' % port)
-        httpd.serve_forever()
 
 if __name__ == "__main__":
-    from sys import argv
-    if len(argv) == 2:
-        run(port=int(argv[1]))
-    else:
-        run()
-
+    main()

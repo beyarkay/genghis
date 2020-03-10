@@ -107,7 +107,7 @@ def execute_cmd(student_number, cmd):
             add_fruit(layout)
 
         elif get_cell(layout, bot, cmd) in ICON_PORT:
-            port_bot(bot, bot_data['default_icon'])
+            port_bot(bot, bot_data)
 
 
 def get_cell(layout, bot, cmd):
@@ -140,15 +140,14 @@ def add_fruit(layout):
             layout[location[0]][location[1]] = ICON_FRUIT
             break
 
-def port_bot(bot, curr_bot_icon):
-    content = {"some":"data"}
+def port_bot(bot, bot_data):
     r = requests.post(
-        "https://people.cs.uct.ac.za/~{}/genghis/bouncer.py".format(arg),
-        json=content
-                    
+        "https://people.cs.uct.ac.za/~{}/genghis/requests.php".format(arg),
+        data=bot_data
     ) 
     print(r.status_code)
     print(r.text)
+
 
 
 def check_is_over():
