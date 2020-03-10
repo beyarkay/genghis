@@ -24,6 +24,13 @@ ICON_PORT = [str(i) for i in list(range(0, 20))]
 ICON_AIR = ' '
 ICON_SOFT = sum([ICON_BOTS, [ICON_FOOD], [ICON_FRUIT]], [])
 
+ports = {
+    "1": "KNXBOY001",
+    "2": "MSHSTU001",
+    "3": "KNXBOY001",
+    "4": "MSHSTU001",
+}
+
 def main():
     global layout
     with open("layout_template.txt", "r") as mapfile:
@@ -59,44 +66,41 @@ def main():
 
 
 def run():
-    global count
-    is_over = False
-    while not is_over:
+    while not check_is_over():
     # TODO instead, loop through each of the dirs in ./bots/
         dirs = glob.glob(os.path.join("bots", "*"))
         print("\n===============Round {}===============".format(count))
         for directory in dirs:
-            """bots/KNXBOY001"""
             student_number = directory.split(os.sep)[-1]
             shutil.copy("layout.txt", "{}/layout.txt".format(directory))
             time.sleep(0.5)
             step(directory)
-            is_over = check_is_over()
             with open("layout.txt", "w+") as mapfile:
                 mapfile.writelines(["".join(list(i)) + "\n" for i in zip(*layout)] )
             update_html()
 
-        for student_number, bot_path in zip(sys.argv[1:], bot_paths):
-            shutil.copy("layout.txt", "{}/layout.txt".format(student_number))
-            time.sleep(0.5)
-            step(student_number)
-            is_over = check_is_over()
-            with open("layout.txt", "w+") as mapfile:
-                mapfile.writelines(["".join(list(i)) + "\n" for i in zip(*layout)] )
-            update_html()
+#        for student_number, bot_path in zip(sys.argv[1:], bot_paths):
+#            shutil.copy("layout.txt", "{}/layout.txt".format(student_number))
+#            time.sleep(0.5)
+#            step(student_number)
+#            is_over = check_is_over()
+#            with open("layout.txt", "w+") as mapfile:
+#                mapfile.writelines(["".join(list(i)) + "\n" for i in zip(*layout)] )
+#            update_html()
         print("\n".join(["".join(list(i)) for i in zip(*layout)]))
 
 def step(directory):
     result = subprocess.run(["python3", os.path.join(directory, "bot.py")], stdout=subprocess.PIPE)
     cmd = str(result.stdout, encoding='utf8').strip()
     execute_cmd(directory, cmd)
+
 # TODO refactor student_number --> directory
 def execute_cmd(directory, cmd):
     global layout
     with open("{0}/{1}.json".format(directory, directory.split(os.sep)[-1]), "r") as statsfile:
         bot_data = json.load(statsfile)
 
-    print("{} is performing '{}'".format(student_number, cmd))
+    print("{} is performing '{}'".format(directory, cmd))
     bot = (None, None)
     for x, col in enumerate(layout):
         for y, item in enumerate(col):
@@ -121,7 +125,7 @@ def execute_cmd(directory, cmd):
             add_fruit(layout)
 
         elif get_cell(layout, bot, cmd) in ICON_PORT:
-            port_bot(bot, bot_data)
+            port_bot(bot, bot_data, get_cell(layout, bot, cmd))
 
 
 def get_cell(layout, bot, cmd):
@@ -154,19 +158,20 @@ def add_fruit(layout):
             layout[location[0]][location[1]] = ICON_FRUIT
             break
 
-def port_bot(bot, bot_data):
+def port_bot(bot, bot_data, port):
+    global ports
+    new_node = ports[port]
     r = requests.post(
-        "https://people.cs.uct.ac.za/~{}/genghis/requests.php".format(bot_data['student_number']),
+        "https://people.cs.uct.ac.za/~{}/genghis/requests.php".format(new_node))
         data=bot_data
     ) 
+    print("Porting {} to {}".format(bot_data['student_number'], new_node))
     print(r.status_code)
-    print(r.text)
-    shutil.rmtree("bots/{}".format(bot_data['student_number']))
+    shutil.rmtree("bots/{}".format(bot_data['student_number'].upper()))
+
 
 def check_is_over():
-    global count
-    count += 1
-    return count > 100
+    return len(glob.glob(os.path.join("bots", "*"))) == 0
 
 def update_html():
     with open("map_template.html", "r") as templatefile:
