@@ -3,9 +3,10 @@ import subprocess
 import random
 import requests
 import sys
-from shutil import copy
+import shutil
 import json
 import time
+import glob
 
 bot_paths = ["{}/bot.py".format(arg) for arg in sys.argv[1:]]
 layout = []
@@ -44,7 +45,7 @@ def main():
         # Write all the required files to the bot's directory
         with open("{}/bot.py".format(arg), "w+") as botfile:
             botfile.write(bot)
-        copy("layout_template.txt", "{}/layout.txt".format(arg))
+        shutil.copy("layout_template.txt", "{}/layout.txt".format(arg))
         
         bot_data = {
             "default_icon": ICON_BOTS[i],
@@ -61,9 +62,22 @@ def run():
     global count
     is_over = False
     while not is_over:
+    # TODO instead, loop through each of the dirs in ./bots/
+        dirs = glob.glob(os.path.join("bots", "*"))
         print("\n===============Round {}===============".format(count))
+        for directory in dirs:
+            """bots/KNXBOY001"""
+            student_number = directory.split(os.sep)[-1]
+            shutil.copy("layout.txt", "{}/layout.txt".format(directory))
+            time.sleep(0.5)
+            step(directory)
+            is_over = check_is_over()
+            with open("layout.txt", "w+") as mapfile:
+                mapfile.writelines(["".join(list(i)) + "\n" for i in zip(*layout)] )
+            update_html()
+
         for student_number, bot_path in zip(sys.argv[1:], bot_paths):
-            copy("layout.txt", "{}/layout.txt".format(student_number))
+            shutil.copy("layout.txt", "{}/layout.txt".format(student_number))
             time.sleep(0.5)
             step(student_number)
             is_over = check_is_over()
@@ -72,14 +86,14 @@ def run():
             update_html()
         print("\n".join(["".join(list(i)) for i in zip(*layout)]))
 
-def step(student_number):
-    result = subprocess.run(["python3", os.path.join(student_number, "bot.py")], stdout=subprocess.PIPE)
+def step(directory):
+    result = subprocess.run(["python3", os.path.join(directory, "bot.py")], stdout=subprocess.PIPE)
     cmd = str(result.stdout, encoding='utf8').strip()
-    execute_cmd(student_number, cmd)
-
-def execute_cmd(student_number, cmd):
+    execute_cmd(directory, cmd)
+# TODO refactor student_number --> directory
+def execute_cmd(directory, cmd):
     global layout
-    with open("{0}/{0}.json".format(student_number), "r") as statsfile:
+    with open("{0}/{1}.json".format(directory, directory.split(os.sep)[-1]), "r") as statsfile:
         bot_data = json.load(statsfile)
 
     print("{} is performing '{}'".format(student_number, cmd))
@@ -142,13 +156,12 @@ def add_fruit(layout):
 
 def port_bot(bot, bot_data):
     r = requests.post(
-        "https://people.cs.uct.ac.za/~{}/genghis/requests.php".format(arg),
+        "https://people.cs.uct.ac.za/~{}/genghis/requests.php".format(bot_data['student_number']),
         data=bot_data
     ) 
     print(r.status_code)
     print(r.text)
-
-
+    shutil.rmtree("bots/{}".format(bot_data['student_number']))
 
 def check_is_over():
     global count
