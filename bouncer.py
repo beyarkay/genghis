@@ -34,8 +34,6 @@ def main():
         "student_number": arg
     }
     with open("bots/{0}/{0}.json".format(arg), "w+") as statsfile:
-        json.dump(bot_data, statsfile)
-
 
 if __name__ == "__main__":
     main()
