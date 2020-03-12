@@ -37,41 +37,53 @@ def main():
         layout = [line.strip() for line in mapfile.readlines()]
     layout = [list(i) for i in zip(*layout)]
     for i, arg in enumerate(sys.argv[1:]):
-        print("Creating ./{}/".format(arg))
-        if not os.path.exists(arg):
-            os.mkdir(arg)
-#        try:
-        r = requests.get("https://people.cs.uct.ac.za/~{}/genghis/bot.py".format(arg)) 
-        print(r)
+        add_bot_dir(arg, ICON_BOTS[i])
+    run()
+
+def add_bot_dir(sn, icon):
+    sn = sn.upper()
+    full_path = os.path.join("bots", sn)
+
+    r = requests.get("https://people.cs.uct.ac.za/~{}/genghis/bot.py".format(sn)) 
+    if r.ok:
+        bot = r.text
+    else:
+        r = requests.get("https://people.cs.uct.ac.za/~{}/ghengis/bot.py".format(sn))
         if r.ok:
             bot = r.text
         else:
-            bot = requests.get("https://people.cs.uct.ac.za/~{}/ghengis/bot.py".format(arg)).text
-
+            print("{}/bot.py collection failed: {}".format(sn, r.status))
+    if r.ok:
+        if not os.path.exists(full_path):
+            print("Creating ./bots/{}/".format(full_path))
+            os.mkdir(full_path)
 
         # Write all the required files to the bot's directory
-        with open("{}/bot.py".format(arg), "w+") as botfile:
+        with open("{}/bot.py".format(full_path), "w+") as botfile:
             botfile.write(bot)
-        shutil.copy("layout_template.txt", "{}/layout.txt".format(arg))
+        shutil.copy("layout_template.txt", "{}/layout.txt".format(full_path))
         
         bot_data = {
-            "default_icon": ICON_BOTS[i],
+            "default_icon": icon,
             "state": 0,
-            "score":0,
-            "student_number": arg
+            "score": 0,
+            "student_number": sn
         }
-        with open("{0}/{0}.json".format(arg), "w+") as statsfile:
+        with open("{0}/{1}.json".format(full_path, sn), "w+") as statsfile:
             json.dump(bot_data, statsfile)
-    run()
-
 
 def run():
     while not check_is_over():
-    # TODO instead, loop through each of the dirs in ./bots/
-        dirs = glob.glob(os.path.join("bots", "*"))
+        with open("gamestate.json", "r+") as j:
+            gamestate = json.load(j)
+            dirs = ["bots/" + sn for sn in gamestate['bots']]
+        
         print("\n===============Round {}===============".format(count))
         for directory in dirs:
+            if not os.path.exists(directory):
+                add_bot_dir(directory, icon) # FIXME figure otu what Icon should be
             student_number = directory.split(os.sep)[-1]
+
             shutil.copy("layout.txt", "{}/layout.txt".format(directory))
             time.sleep(0.5)
             step(directory)

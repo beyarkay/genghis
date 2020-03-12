@@ -1,7 +1,7 @@
 
 import json
 data = {
-    "bots": [],
+    "bots": {},
     "nodes": [],
     "self": "KNXBOY001",
 }
