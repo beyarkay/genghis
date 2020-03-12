@@ -8,7 +8,7 @@ def main():
         layout = mapfile.readlines()
     
     student_number = os.path.abspath(__file__).split(os.sep)[-2].upper()
-    with open("{0}/{0}.json".format(student_number), "r") as statsfile:
+    with open("bots/{0}/{0}.json".format(student_number), "r") as statsfile:
         bot_data = json.load(statsfile)
 
     print(get_move(layout))

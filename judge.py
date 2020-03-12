@@ -32,15 +32,16 @@ ports = {
 }
 
 def main():
+    # TODO currently gamestate.json doesn't have any checking to see if the file is already opened by bouncer.py
     global layout
     with open("layout_template.txt", "r") as mapfile:
         layout = [line.strip() for line in mapfile.readlines()]
     layout = [list(i) for i in zip(*layout)]
     for i, arg in enumerate(sys.argv[1:]):
-        add_bot_dir(arg, ICON_BOTS[i])
+        add_bot_dir(arg)
     run()
 
-def add_bot_dir(sn, icon):
+def add_bot_dir(sn):
     sn = sn.upper()
     full_path = os.path.join("bots", sn)
 
@@ -55,33 +56,50 @@ def add_bot_dir(sn, icon):
             print("{}/bot.py collection failed: {}".format(sn, r.status))
     if r.ok:
         if not os.path.exists(full_path):
-            print("Creating ./bots/{}/".format(full_path))
+            print("Creating ./{}/".format(full_path))
             os.mkdir(full_path)
-
-        # Write all the required files to the bot's directory
+        
         with open("{}/bot.py".format(full_path), "w+") as botfile:
             botfile.write(bot)
         shutil.copy("layout_template.txt", "{}/layout.txt".format(full_path))
+
+        with open("gamestate.json", "r+") as j:
+            gamestate = json.load(j)
+        available_icons = list("abcdefghijklmnopqrstuvwxyz")
+        for bot in gamestate['bots'].values():
+            ic = bot['default_icon']
+            if ic: # new bots are initialised with an empty string as their icon
+                available_icons.remove(ic)
+        if not available_icons:
+            print("All icons are used up: " + gamestate['bots'])
+
+        # Write all the required files to the bot's directory
         
         bot_data = {
-            "default_icon": icon,
+            "default_icon": available_icons[0],
             "state": 0,
             "score": 0,
             "student_number": sn
         }
+        gamestate['bots'][sn]["default_icon"] = available_icons[0]
+
         with open("{0}/{1}.json".format(full_path, sn), "w+") as statsfile:
-            json.dump(bot_data, statsfile)
+            json.dump(bot_data, statsfile, indent=2)
+
+        with open("gamestate.json", "w") as j:
+            json.dump(gamestate, j, indent=2)
+
+
 
 def run():
     while not check_is_over():
         with open("gamestate.json", "r+") as j:
             gamestate = json.load(j)
             dirs = ["bots/" + sn for sn in gamestate['bots']]
-        
         print("\n===============Round {}===============".format(count))
         for directory in dirs:
             if not os.path.exists(directory):
-                add_bot_dir(directory, icon) # FIXME figure otu what Icon should be
+                add_bot_dir(directory)
             student_number = directory.split(os.sep)[-1]
 
             shutil.copy("layout.txt", "{}/layout.txt".format(directory))
@@ -174,9 +192,9 @@ def port_bot(bot, bot_data, port):
     global ports
     new_node = ports[port]
     r = requests.post(
-        "https://people.cs.uct.ac.za/~{}/genghis/requests.php".format(new_node))
+        "https://people.cs.uct.ac.za/~{}/genghis/requests.php".format(new_node), 
         data=bot_data
-    ) 
+    )
     print("Porting {} to {}".format(bot_data['student_number'], new_node))
     print(r.status_code)
     shutil.rmtree("bots/{}".format(bot_data['student_number'].upper()))

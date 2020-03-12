@@ -1,1 +1,14 @@
-{"self": "KNXBOY001", "nodes": [], "bots": ["KNXBOY001"]}
+{
+  "bots": {
+    "MSHSTU001": {
+      "default_icon": "",
+      "student_number": "MSHSTU001"
+    },
+    "KNXBOY001": {
+      "default_icon": "",
+      "student_number": "KNXBOY001"
+    }
+  },
+  "nodes": [],
+  "self": "KNXBOY001"
+}

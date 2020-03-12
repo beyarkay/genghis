@@ -4,7 +4,7 @@ import re
 import os
 import json
 from shutil import copy
-
+# TODO add checks to see if the bot alread exists in the gamestate.json
 def main():
     if re.match(r"^[bcdfghjklmnpqrstvwxyz]{3}\w{3}\d{3}$", sys.argv[1].replace("'","").lower()):
         sn = sys.argv[1].upper()
@@ -16,7 +16,7 @@ def main():
         }
         print(state)
         with open("gamestate.json", "w") as gamestate:
-            json.dump(state, gamestate)
+            json.dump(state, gamestate, indent=2)
     else:
         print("Error, '" +sys.argv[1]+ "' doesn't match regex")
         return
