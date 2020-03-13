@@ -45,9 +45,11 @@ of the node where it is currently fighting
 
 
 ## A more in depth setup
-(Work in progress)
+(work in progress)
+
 
 ## Customising your bot
+(work in progress)
 
 
 
