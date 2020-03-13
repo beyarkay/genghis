@@ -30,7 +30,7 @@ ports = {
     "3": "KNXBOY001",
     "4": "MSHSTU001",
 }
-
+# TODO setup layout_template to be checked for random bot spawns wherever a _ is found
 def main():
     # TODO currently gamestate.json doesn't have any checking to see if the file is already opened by bouncer.py
     global layout
@@ -43,17 +43,20 @@ def main():
 
 def add_bot_dir(sn):
     sn = sn.upper()
+    print("Attempting new bot: " + sn)
     full_path = os.path.join("bots", sn)
-
-    r = requests.get("https://people.cs.uct.ac.za/~{}/genghis/bot.py".format(sn)) 
+    
+    url = "https://people.cs.uct.ac.za/~{}/genghis/bot.py".format(sn)
+    r = requests.get(url) 
     if r.ok:
         bot = r.text
     else:
-        r = requests.get("https://people.cs.uct.ac.za/~{}/ghengis/bot.py".format(sn))
+        url = "https://people.cs.uct.ac.za/~{}/ghengis/bot.py".format(sn)
+        r = requests.get(url)
         if r.ok:
             bot = r.text
         else:
-            print("{}/bot.py collection failed: {}".format(sn, r.status))
+            print("{}/bot.py collection failed: {}\nurl={}".format(sn, r.status_code, url))
     if r.ok:
         if not os.path.exists(full_path):
             print("Creating ./{}/".format(full_path))
@@ -65,24 +68,28 @@ def add_bot_dir(sn):
 
         with open("gamestate.json", "r+") as j:
             gamestate = json.load(j)
-        available_icons = list("abcdefghijklmnopqrstuvwxyz")
-        for bot in gamestate['bots'].values():
-            ic = bot['default_icon']
-            if ic: # new bots are initialised with an empty string as their icon
-                available_icons.remove(ic)
-        if not available_icons:
-            print("All icons are used up: " + gamestate['bots'])
+
+        bot_icon = gamestate['bots'][sn]['default_icon']
+        if not bot_icon:
+            available_icons = list("abcdefghijklmnopqrstuvwxyz")
+            for bot in gamestate['bots'].values():
+                ic = bot['default_icon']
+                if ic: # new bots are initialised with an empty string as their icon
+                    available_icons.remove(ic)
+            if not available_icons:
+                print("All icons are used up: " + gamestate['bots'])
+            bot_icon = available_icons[0]
 
         # Write all the required files to the bot's directory
         
         bot_data = {
-            "default_icon": available_icons[0],
+            "default_icon": bot_icon,
             "state": 0,
             "score": 0,
             "student_number": sn
         }
-        gamestate['bots'][sn]["default_icon"] = available_icons[0]
-
+        gamestate['bots'][sn]["default_icon"] = bot_icon
+        print("Bot data added: {}".format(gamestate['bots'][sn]))
         with open("{0}/{1}.json".format(full_path, sn), "w+") as statsfile:
             json.dump(bot_data, statsfile, indent=2)
 
@@ -92,15 +99,16 @@ def add_bot_dir(sn):
 
 
 def run():
-    while not check_is_over():
+    print("Starting battle on: https://people.cs.uct.ac.za/~KNXBOY001/genghis/")
+    count = 1
+    while True:
         with open("gamestate.json", "r+") as j:
             gamestate = json.load(j)
             dirs = ["bots/" + sn for sn in gamestate['bots']]
         print("\n===============Round {}===============".format(count))
-        for directory in dirs:
+        for directory, sn in zip(dirs, gamestate['bots'].keys()):
             if not os.path.exists(directory):
-                add_bot_dir(directory)
-            student_number = directory.split(os.sep)[-1]
+                add_bot_dir(sn)
 
             shutil.copy("layout.txt", "{}/layout.txt".format(directory))
             time.sleep(0.5)
@@ -109,15 +117,10 @@ def run():
                 mapfile.writelines(["".join(list(i)) + "\n" for i in zip(*layout)] )
             update_html()
 
-#        for student_number, bot_path in zip(sys.argv[1:], bot_paths):
-#            shutil.copy("layout.txt", "{}/layout.txt".format(student_number))
-#            time.sleep(0.5)
-#            step(student_number)
-#            is_over = check_is_over()
-#            with open("layout.txt", "w+") as mapfile:
-#                mapfile.writelines(["".join(list(i)) + "\n" for i in zip(*layout)] )
-#            update_html()
-        print("\n".join(["".join(list(i)) for i in zip(*layout)]))
+#        print("\n".join(["".join(list(i)) for i in zip(*layout)]))
+        count += 1
+        if check_is_over():
+            break
 
 def step(directory):
     result = subprocess.run(["python3", os.path.join(directory, "bot.py")], stdout=subprocess.PIPE)
@@ -126,11 +129,11 @@ def step(directory):
 
 # TODO refactor student_number --> directory
 def execute_cmd(directory, cmd):
+    print("Executing cmd: {} is doing {}".format(directory, cmd))
     global layout
     with open("{0}/{1}.json".format(directory, directory.split(os.sep)[-1]), "r") as statsfile:
         bot_data = json.load(statsfile)
 
-    print("{} is performing '{}'".format(directory, cmd))
     bot = (None, None)
     for x, col in enumerate(layout):
         for y, item in enumerate(col):
@@ -191,9 +194,12 @@ def add_fruit(layout):
 def port_bot(bot, bot_data, port):
     global ports
     new_node = ports[port]
+    d = {
+        "student_number": bot_data['student_number']
+    }
     r = requests.post(
         "https://people.cs.uct.ac.za/~{}/genghis/requests.php".format(new_node), 
-        data=bot_data
+        data=d
     )
     print("Porting {} to {}".format(bot_data['student_number'], new_node))
     print(r.status_code)

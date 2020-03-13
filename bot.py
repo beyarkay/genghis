@@ -18,6 +18,7 @@ def get_move(layout):
     fruit = []
     food = []
     walls = []
+    ports = []
     bot = (None, None)
     # For the basic move, simply try to go towards the fruit
     for c, col in enumerate(layout):
@@ -34,15 +35,13 @@ def get_move(layout):
             elif item == "#" or item != " ":
                 walls.append((r, c))
             
+            elif item in [str(n) for n in range(10)]:
+                ports.append((r, c))
+    
     # Figure out the closest fruit:
-    closest = fruit[0]
-    closest_dist = abs(bot[0] - closest[0]) + abs(bot[1] - closest[1])
-    for f in fruit:
-        dist = abs(bot[0] - f[0]) + abs(bot[1] - f[1])
-        if dist < closest_dist:
-            closest = f
-            closest_dist = dist
-
+#    closest = get_closest(fruit, bot)
+    
+    closest = get_closest(ports, bot)
 
     if closest[0] < bot[0]:
         return "l"
@@ -54,7 +53,16 @@ def get_move(layout):
         return "d"
     else:
         return ""
-    
+
+def get_closest(locations, bot_location):
+    closest = locations[0]
+    closest_dist = abs(bot_location[0] - closest[0]) + abs(bot_location[1] - closest[1])
+    for l in locations:
+        dist = abs(bot[0] - l[0]) + abs(bot[1] - l[1])
+        if dist < closest_dist:
+            closest = l
+            closest_dist = dist
+    return closest
 
 
 if __name__ == '__main__':
