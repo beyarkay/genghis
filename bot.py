@@ -32,10 +32,10 @@ def get_move(layout):
             elif item == "@":
                 fruit.append((r, c))
            
-            elif item == "#" or item != " ":
+            elif item == "#":
                 walls.append((r, c))
             
-            elif item in [str(n) for n in range(10)]:
+            elif item in list("0123456789"):
                 ports.append((r, c))
     
     # Figure out the closest fruit:
@@ -55,10 +55,14 @@ def get_move(layout):
         return ""
 
 def get_closest(locations, bot_location):
+    if not bot_location or not bot_location[0] or not bot_location[1]:
+        raise Exception("bot_locations is empty: {}".format(bot_location))
+    if not locations:
+        raise Exception("locations is empty: {}".format(locations))
     closest = locations[0]
     closest_dist = abs(bot_location[0] - closest[0]) + abs(bot_location[1] - closest[1])
     for l in locations:
-        dist = abs(bot[0] - l[0]) + abs(bot[1] - l[1])
+        dist = abs(bot_location[0] - l[0]) + abs(bot_location[1] - l[1])
         if dist < closest_dist:
             closest = l
             closest_dist = dist

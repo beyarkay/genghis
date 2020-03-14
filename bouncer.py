@@ -8,17 +8,19 @@ from shutil import copy
 def main():
     if re.match(r"^[bcdfghjklmnpqrstvwxyz]{3}\w{3}\d{3}$", sys.argv[1].replace("'","").lower()):
         sn = sys.argv[1].upper()
-        with open("gamestate.json", "r+") as gamestate:
+        node_path = os.path.join("/home", sn[0].lower(), sn.lower(), "public_html/genghis/")
+        print("node_path = " + node_path)
+        with open(os.path.join(node_path, "gamestate.json"), "r+") as gamestate:
             state = json.load(gamestate)
         state['bots'][sn] = {
             "default_icon": "",
             "student_number": sn
         }
-        print(state)
-        with open("gamestate.json", "w") as gamestate:
+        print("Added bot {} to {}/gamestate.json".format(sn, node_path))
+        with open(os.path.join(node_path, "gamestate.json"), "w") as gamestate:
             json.dump(state, gamestate, indent=2)
     else:
-        print("Error, '" +sys.argv[1]+ "' doesn't match regex")
+        raise Exception("Error, '" +sys.argv[1]+ "' doesn't match regex")
         return
 
 if __name__ == "__main__":

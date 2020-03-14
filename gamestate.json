@@ -1,14 +1,17 @@
 {
+  "ports": {
+    "1": "KNXBOY001",
+    "2": "MSHSTU001"
+  },
   "self": "KNXBOY001",
-  "nodes": [],
   "bots": {
-    "MSHSTU001": {
-      "default_icon": "c",
-      "student_number": "MSHSTU001"
-    },
     "KNXBOY001": {
-      "default_icon": "b",
+      "default_icon": "a",
       "student_number": "KNXBOY001"
+    },
+    "MSHSTU001": {
+      "default_icon": "b",
+      "student_number": "MSHSTU001"
     }
   }
 }

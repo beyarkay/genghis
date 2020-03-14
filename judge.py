@@ -11,6 +11,9 @@ import glob
 bot_paths = ["{}/bot.py".format(arg) for arg in sys.argv[1:]]
 layout = []
 count = 0
+
+SPAWN_LOCATIONS = []
+
 CMD_LEFT = 'l'
 CMD_RIGHT = 'r'
 CMD_UP = 'u'
@@ -20,6 +23,7 @@ ICON_BOTS = list("abcdefghijklmnopqrstuvwxyz")
 ICON_FOOD = '.'
 ICON_FRUIT = '@'
 ICON_SOLID = '#'
+ICON_SPAWN = "_"
 ICON_PORT = [str(i) for i in list(range(0, 20))]
 ICON_AIR = ' '
 ICON_SOFT = sum([ICON_BOTS, [ICON_FOOD], [ICON_FRUIT]], [])
@@ -33,12 +37,41 @@ ports = {
 # TODO setup layout_template to be checked for random bot spawns wherever a _ is found
 def main():
     # TODO currently gamestate.json doesn't have any checking to see if the file is already opened by bouncer.py
+    global SPAWN_LOCATIONS
     global layout
+
+    # Read in the layout template file to figure out spawn locations
     with open("layout_template.txt", "r") as mapfile:
         layout = [line.strip() for line in mapfile.readlines()]
     layout = [list(i) for i in zip(*layout)]
-    for i, arg in enumerate(sys.argv[1:]):
-        add_bot_dir(arg)
+
+    # Create a list of spawn locations
+    for c, col in enumerate(layout):
+        for r, item in enumerate(col):
+            if item == ICON_SPAWN:
+                SPAWN_LOCATIONS.append((c, r))        
+    spawn_locations = SPAWN_LOCATIONS[:]
+    random.shuffle(spawn_locations)
+
+    # Read gamestate.json to get a list of the bots
+    with open("gamestate.json", "r+") as j:
+        gamestate = json.load(j)
+    print(SPAWN_LOCATIONS)
+    # Loop through the bots, and add them to the map at one of the specified spawn locations
+    for bot in gamestate['bots'].values():
+        if spawn_locations:
+            x_pos, y_pos = spawn_locations.pop()
+            layout[x_pos][y_pos] = bot['default_icon']
+        else:
+            raise Exception("Not enough spawn locations for the number of bots, gamestate=" + gamestate)
+    # Now replace the unused spawn locations with ICON_AIR
+    for x_pos, y_pos in spawn_locations:        
+        layout[x_pos][y_pos] = ICON_AIR
+
+    # Save the game-ready 2D list to layout.txt, which will be copied into the bots' directories later
+    with open("layout.txt", "w+") as mapfile:
+        mapfile.writelines(["".join(list(i)) + "\n" for i in zip(*layout)] )
+    # Start the game
     run()
 
 def add_bot_dir(sn):
@@ -56,7 +89,7 @@ def add_bot_dir(sn):
         if r.ok:
             bot = r.text
         else:
-            print("{}/bot.py collection failed: {}\nurl={}".format(sn, r.status_code, url))
+            raise Exception("{}/bot.py collection failed: {}\nurl={}".format(sn, r.status_code, url))
     if r.ok:
         if not os.path.exists(full_path):
             print("Creating ./{}/".format(full_path))
@@ -64,7 +97,7 @@ def add_bot_dir(sn):
         
         with open("{}/bot.py".format(full_path), "w+") as botfile:
             botfile.write(bot)
-        shutil.copy("layout_template.txt", "{}/layout.txt".format(full_path))
+        shutil.copy("layout.txt", "{}/layout.txt".format(full_path))
 
         with open("gamestate.json", "r+") as j:
             gamestate = json.load(j)
@@ -89,45 +122,71 @@ def add_bot_dir(sn):
             "student_number": sn
         }
         gamestate['bots'][sn]["default_icon"] = bot_icon
-        print("Bot data added: {}".format(gamestate['bots'][sn]))
+        print("Bot data added to botjson: {}".format(gamestate['bots'][sn]))
         with open("{0}/{1}.json".format(full_path, sn), "w+") as statsfile:
             json.dump(bot_data, statsfile, indent=2)
 
         with open("gamestate.json", "w") as j:
             json.dump(gamestate, j, indent=2)
 
+def add_bot_to_layout(sn):
+    with open("gamestate.json", "r+") as j:
+        gamestate = json.load(j)
 
+    inf_loop_count = 0
+    while True:
+        x_pos, y_pos = random.choice(SPAWN_LOCATIONS)
+        if get_cell((x_pos, y_pos), "") == ICON_AIR:
+            print("Adding {}({}) to map at {}".format(sn, gamestate['bots'][sn]['default_icon'], (x_pos, y_pos)))
+            layout[x_pos][y_pos] = gamestate['bots'][sn]['default_icon']
+            with open("layout.txt", "w+") as mapfile:
+                mapfile.writelines(["".join(list(i)) + "\n" for i in zip(*layout)] )
+            break
+        inf_loop_count += 1
+        if inf_loop_count > 200:
+            raise Exception("Infinite loop: attempting to add {} to map".format(sn))
+    
 
 def run():
+    global layout
     print("Starting battle on: https://people.cs.uct.ac.za/~KNXBOY001/genghis/")
     count = 1
     while True:
         with open("gamestate.json", "r+") as j:
             gamestate = json.load(j)
-            dirs = ["bots/" + sn for sn in gamestate['bots']]
-        print("\n===============Round {}===============".format(count))
-        for directory, sn in zip(dirs, gamestate['bots'].keys()):
+        if gamestate['bots'].keys():
+            print("\n===============Round {}===============".format(count))
+        else:
+            print("No bots in gamestate: " + gamestate)
+
+        for sn in gamestate['bots'].keys():
+            directory = "bots/" + sn
             if not os.path.exists(directory):
                 add_bot_dir(sn)
+                add_bot_to_layout(sn)
 
+            with open("layout.txt", "w+") as mapfile:
+                mapfile.writelines(["".join(list(i)) + "\n" for i in zip(*layout)] )
             shutil.copy("layout.txt", "{}/layout.txt".format(directory))
             time.sleep(0.5)
             step(directory)
-            with open("layout.txt", "w+") as mapfile:
-                mapfile.writelines(["".join(list(i)) + "\n" for i in zip(*layout)] )
             update_html()
 
-#        print("\n".join(["".join(list(i)) for i in zip(*layout)]))
         count += 1
         if check_is_over():
             break
+
+    # Finish the game nicely
+    with open("layout_template.txt", "r") as mapfile:
+        layout = [line.strip() for line in mapfile.readlines()]
+    layout = [list(i) for i in zip(*layout)]
+    update_html()
 
 def step(directory):
     result = subprocess.run(["python3", os.path.join(directory, "bot.py")], stdout=subprocess.PIPE)
     cmd = str(result.stdout, encoding='utf8').strip()
     execute_cmd(directory, cmd)
 
-# TODO refactor student_number --> directory
 def execute_cmd(directory, cmd):
     print("Executing cmd: {} is doing {}".format(directory, cmd))
     global layout
@@ -150,18 +209,19 @@ def execute_cmd(directory, cmd):
         (cmd == "d" and bot[1] + 1 < len(layout[0])):
 
         # Process the move, checking to see if the bot will collide with anything of interest
-        if get_cell(layout, bot, cmd) == ICON_AIR:
-            move_bot(layout, bot, cmd, bot_data['default_icon'])
+        if get_cell(bot, cmd) == ICON_AIR:
+            move_bot(bot, cmd, bot_data['default_icon'])
         
-        elif get_cell(layout, bot, cmd) == ICON_FRUIT:
-            move_bot(layout, bot, cmd, bot_data['default_icon'])
-            add_fruit(layout)
+        elif get_cell(bot, cmd) == ICON_FRUIT:
+            move_bot(bot, cmd, bot_data['default_icon'])
+            add_fruit()
 
-        elif get_cell(layout, bot, cmd) in ICON_PORT:
-            port_bot(bot, bot_data, get_cell(layout, bot, cmd))
+        elif get_cell(bot, cmd) in ICON_PORT:
+            port_bot(bot, bot_data, get_cell(bot, cmd))
 
 
-def get_cell(layout, bot, cmd):
+def get_cell(bot, cmd):
+    global layout
     cmd_dict = {
         "l": (-1,  0),
         "r": ( 1,  0),
@@ -172,7 +232,8 @@ def get_cell(layout, bot, cmd):
     return layout[bot[0] + cmd_dict[cmd][0]][bot[1] + cmd_dict[cmd][1]]
 
 
-def move_bot(layout, bot, cmd, curr_bot_icon):
+def move_bot(bot, cmd, curr_bot_icon):
+    global layout
     cmd_dict = {
         "l": (-1,  0),
         "r": ( 1,  0),
@@ -184,16 +245,20 @@ def move_bot(layout, bot, cmd, curr_bot_icon):
     layout[bot[0]][bot[1]] = ICON_AIR 
     layout[bot[0] + cmd_dict[cmd][0]][bot[1] + cmd_dict[cmd][1]] = curr_bot_icon 
 
-def add_fruit(layout):
+def add_fruit():
+    global layout
     while True:
         location = (random.randint(0, len(layout) - 1), random.randint(0, len(layout[0]) - 1))
-        if get_cell(layout, location, "") == ICON_AIR:
+        if get_cell(location, "") == ICON_AIR:
             layout[location[0]][location[1]] = ICON_FRUIT
             break
 
 def port_bot(bot, bot_data, port):
+    global layout
     global ports
-    new_node = ports[port]
+    with open("gamestate.json", "r+") as j:
+        gamestate = json.load(j)
+    new_node = gamestate['ports'][port]
     d = {
         "student_number": bot_data['student_number']
     }
@@ -201,10 +266,23 @@ def port_bot(bot, bot_data, port):
         "https://people.cs.uct.ac.za/~{}/genghis/requests.php".format(new_node), 
         data=d
     )
-    print("Porting {} to {}".format(bot_data['student_number'], new_node))
-    print(r.status_code)
-    shutil.rmtree("bots/{}".format(bot_data['student_number'].upper()))
+    if r.ok:
+        print("Ported {} from {} to {}".format(bot_data['student_number'], bot, new_node))
+        shutil.rmtree("bots/{}".format(bot_data['student_number'].upper()))
+        layout[bot[0]][bot[1]] = ICON_AIR
+    else:
+        r = requests.post(
+            "https://people.cs.uct.ac.za/~{}/ghengis/requests.php".format(new_node), 
+            data=d
+        )
+        if r.ok:
+            print("Ported {} from {} to {}".format(bot_data['student_number'], bot, new_node))
+            shutil.rmtree("bots/{}".format(bot_data['student_number'].upper()))
+            layout[bot[0]][bot[1]] = ICON_AIR
+        else:
+            raise Exception("Port failed: {} to {} gave error {}".format(bot_data['student_number'], new_node, r.status_code))
 
+        
 
 def check_is_over():
     return len(glob.glob(os.path.join("bots", "*"))) == 0
@@ -224,16 +302,32 @@ def update_html():
         tbody += "</tr>"
     tbody += "</tbody>"
 
+    with open("gamestate.json", "r+") as j:
+        gamestate = json.load(j)
     # TODO this may give troubles with file reading permissions
     host = os.path.abspath('../..').split(os.sep)[-1].upper() 
     host = "<a href=\"https://people.cs.uct.ac.za/~"+host+"/genghis/\">" + host + "</a>"
-
-    bots = [arg + " as " + icon for arg, icon in zip(sys.argv[1:], ICON_BOTS)]
-    bots = ["<a href=\"https://people.cs.uct.ac.za/~"+arg+"/genghis/\">" + arg + "</a> as " + icon for arg, icon in zip(sys.argv[1:], ICON_BOTS)]
-
+    
+    sns = gamestate['bots'].keys()
+    
+    format_string = "<strong><a href=\"https://people.cs.uct.ac.za/~{}/genghis/\">{}</a></strong> ({})"
+    bot_icons = [bot['default_icon'] for bot in gamestate['bots'].values()]
+    botstrings = [format_string.format(sn, sn, icon) for sn, icon in zip(sns, bot_icons)]
+    botstring = ", ".join(botstrings)
+    
+    ports_fstring = "{0}=><a href=\"https://people.cs.uct.ac.za/~{1}/genghis/\">{1}</a>"
+    ports_strings = [ports_fstring.format(k, v) for (k, v) in gamestate['ports'].items()]
+    ports_string = ", ".join(ports_strings)
+    
+    
+    status = " (nobody's here...)" if check_is_over() else " (battle in progress!)"
+    
+    
     html = html.replace("{{tbody}}", tbody)
     html = html.replace("{{host}}", host)
-    html = html.replace("{{bots}}", ", ".join(bots))
+    html = html.replace("{{bots}}", botstring)
+    html = html.replace("{{status}}", status)
+    html = html.replace("{{ports}}", ports_string)
     with open("map.html", "w+") as mapfile:
         mapfile.write(html)
 
