@@ -3,3 +3,5 @@ chmod 700 README.md gamestate.json init.sh judge.py layout.txt layout_template.t
 chmod 710 start_battle.sh
 chmod 744 bot.py index.html styles.css map.html
 chmod 755 -R bots bouncer.py requests.php 
+pwd=`pwd`
+crontab -l | { cat; echo "50 7-16 * * 1-5 $pwd/start_battle.sh"; } | crontab -
