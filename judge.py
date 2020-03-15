@@ -24,17 +24,10 @@ ICON_FOOD = '.'
 ICON_FRUIT = '@'
 ICON_SOLID = '#'
 ICON_SPAWN = "_"
-ICON_PORT = [str(i) for i in list(range(0, 20))]
+ICON_PORTS = [str(i) for i in list(range(0, 20))]
 ICON_AIR = ' '
 ICON_SOFT = sum([ICON_BOTS, [ICON_FOOD], [ICON_FRUIT]], [])
 
-ports = {
-    "1": "KNXBOY001",
-    "2": "MSHSTU001",
-    "3": "KNXBOY001",
-    "4": "MSHSTU001",
-}
-# TODO setup layout_template to be checked for random bot spawns wherever a _ is found
 def main():
     # TODO currently gamestate.json doesn't have any checking to see if the file is already opened by bouncer.py
     global SPAWN_LOCATIONS
@@ -149,7 +142,9 @@ def add_bot_to_layout(sn):
 
 def run():
     global layout
-    print("Starting battle on: https://people.cs.uct.ac.za/~KNXBOY001/genghis/")
+
+    host = os.path.abspath('../..').split(os.sep)[-1].upper() 
+    print("Starting battle on: \n\nhttps://people.cs.uct.ac.za/~{}/genghis/\n\n".format(host.lower()))
     count = 1
     while True:
         with open("gamestate.json", "r+") as j:
@@ -216,7 +211,7 @@ def execute_cmd(directory, cmd):
             move_bot(bot, cmd, bot_data['default_icon'])
             add_fruit()
 
-        elif get_cell(bot, cmd) in ICON_PORT:
+        elif get_cell(bot, cmd) in ICON_PORTS:
             port_bot(bot, bot_data, get_cell(bot, cmd))
 
 
@@ -287,35 +282,41 @@ def port_bot(bot, bot_data, port):
 def check_is_over():
     return len(glob.glob(os.path.join("bots", "*"))) == 0
 
+
+
 def update_html():
     with open("map_template.html", "r") as templatefile:
         html = "\n".join(templatefile.readlines())
+    with open("gamestate.json", "r+") as j:
+        gamestate = json.load(j)
     
+    map_port_fstring = "<a href=\"https://people.cs.uct.ac.za/~{0}/genghis/\" target=\"_blank\">{1}</a>"
     tbody = "<tbody>"
     for x, col in enumerate([list(i) for i in zip(*layout)]):
         tbody += "<tr>"
         for y, item in enumerate(col):
             tbody += "<td class=\"td_equal_relative\">" 
-            tbody += item 
+            if item in gamestate['ports'].keys():
+                tbody += map_port_fstring.format(gamestate['ports'][item], item)
+            else:
+                tbody += item 
             tbody += "</td>" 
 
         tbody += "</tr>"
     tbody += "</tbody>"
 
-    with open("gamestate.json", "r+") as j:
-        gamestate = json.load(j)
     # TODO this may give troubles with file reading permissions
     host = os.path.abspath('../..').split(os.sep)[-1].upper() 
     host = "<a href=\"https://people.cs.uct.ac.za/~"+host+"/genghis/\">" + host + "</a>"
     
     sns = gamestate['bots'].keys()
     
-    format_string = "<strong><a href=\"https://people.cs.uct.ac.za/~{}/genghis/\">{}</a></strong> ({})"
+    format_string = "<strong><a href=\"https://people.cs.uct.ac.za/~{}/genghis/\" target=\"_blank\">{}</a></strong> ({})"
     bot_icons = [bot['default_icon'] for bot in gamestate['bots'].values()]
     botstrings = [format_string.format(sn, sn, icon) for sn, icon in zip(sns, bot_icons)]
     botstring = ", ".join(botstrings)
     
-    ports_fstring = "{0}=><a href=\"https://people.cs.uct.ac.za/~{1}/genghis/\">{1}</a>"
+    ports_fstring = "{0}=><a href=\"https://people.cs.uct.ac.za/~{1}/genghis/\" target=\"_blank\">{1}</a>"
     ports_strings = [ports_fstring.format(k, v) for (k, v) in gamestate['ports'].items()]
     ports_string = ", ".join(ports_strings)
     

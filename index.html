@@ -2,7 +2,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="styles.css">
-        <title>Genghis Battle System</title>
+        <title id="title"></title>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     </head>
     <body>
@@ -12,15 +12,18 @@
     
     
     <script>
-        let interval = 250
+        var loc = window.location.pathname;
+        loc = loc.substring(2, loc.length - 9);
+        document.getElementById("title").innerHTML = "Genghis Battle on " + loc;
+        let interval = 250;
         $.ajaxSetup ({
             // Disable caching of AJAX responses
                 cache: false
         });
         function loadMap() {
-            console.log("Loading file");
-            $("div").load("https://people.cs.uct.ac.za/~KNXBOY001/genghis/map.html");
-            console.log("File Loaded")
+            var loc = window.location.pathname;
+            var dir = loc.substring(0, loc.lastIndexOf('/'));
+            $("div").load("https://people.cs.uct.ac.za" + loc + "map.html");
             setTimeout(loadMap, interval);
         }
         setTimeout(loadMap, interval);

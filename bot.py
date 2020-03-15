@@ -7,7 +7,9 @@ def main():
     with open("layout.txt", "r") as mapfile:
         layout = mapfile.readlines()
     
+
     student_number = os.path.abspath(__file__).split(os.sep)[-2].upper()
+#    print("I am {} in {}".format(student_number, __file__))
     with open("bots/{0}/{0}.json".format(student_number), "r") as statsfile:
         bot_data = json.load(statsfile)
 
@@ -20,6 +22,9 @@ def get_move(layout):
     walls = []
     ports = []
     bot = (None, None)
+    enemies = []
+    enemy_icons = list("abcdefghijklmnopqrstuvwxyz")
+    enemy_icons.remove(bot_data['default_icon'])
     # For the basic move, simply try to go towards the fruit
     for c, col in enumerate(layout):
         for r, item in enumerate(col):
@@ -37,11 +42,14 @@ def get_move(layout):
             
             elif item in list("0123456789"):
                 ports.append((r, c))
-    
+            
+            elif item in enemy_icons:
+                enemies.append((r, c))
     # Figure out the closest fruit:
-#    closest = get_closest(fruit, bot)
+    closest = get_closest(fruit, bot)
     
-    closest = get_closest(ports, bot)
+#    closest = get_closest(ports, bot)
+#    closest = get_closest(enemies, bot)
 
     if closest[0] < bot[0]:
         return "l"
