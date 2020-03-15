@@ -38,10 +38,25 @@ of the node where it is currently fighting
 
 ## Quick Setup
 (Work in progress)
+
 1. Log into nightmare, and create a `public_html` directory
-2. Clone this repo into `public_html`
-3. Find the student number of an existing node to connect to
-3. NOT WORKING YET: Run init.sh to create the required files, set permissions and connect your node to a network
+```
+ssh <Student number>@nightmare.cs.uct.ac.za
+<Enter your password>
+mkdir -p ~/public_html/genghis
+```
+2. Clone this repo into `public_html/genghis`
+```
+cd ~/public_html/genghis
+git clone https://github.com/beyarkay/genghis.git
+```
+
+3. `init.sh` will give the files in `genghis/` the correct permissions, and add a job to your crontab:
+```
+./init.sh
+```
+4. You're Done! at least, your as up to date as you can be.
+
 
 
 ## A more in depth setup
@@ -55,6 +70,7 @@ of the node where it is currently fighting
 
 ## TODO
 * Automatically start the battleserver every hour through crontab, and automate this in the init.sh
+* Migrate all the host's bot files to a separate directory
 * Add in a difference checking between the bots
 * Allow the bots to eat each other
 * Add an easy-setup system
