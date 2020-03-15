@@ -54,6 +54,7 @@ of the node where it is currently fighting
 
 
 ## TODO
+* Automatically start the battleserver every hour through crontab, and automate this in the init.sh
 * Add in a difference checking between the bots
 * Allow the bots to eat each other
 * Add an easy-setup system

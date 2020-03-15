@@ -1,6 +1,7 @@
 import os
 import subprocess
 import random
+import datetime
 import requests
 import sys
 import shutil
@@ -18,6 +19,8 @@ CMD_LEFT = 'l'
 CMD_RIGHT = 'r'
 CMD_UP = 'u'
 CMD_DOWN = 'd'
+
+START_TIME = datetime.datetime.now()
 
 ICON_BOTS = list("abcdefghijklmnopqrstuvwxyz")
 ICON_FOOD = '.'
@@ -168,6 +171,7 @@ def run():
             update_html()
 
         count += 1
+        print("{} left".format(datetime.timedelta(minutes=5) - (datetime.datetime.now() - START_TIME)))
         if check_is_over():
             break
 
@@ -280,7 +284,11 @@ def port_bot(bot, bot_data, port):
         
 
 def check_is_over():
-    return len(glob.glob(os.path.join("bots", "*"))) == 0
+    global START_TIME
+    if datetime.datetime.now() - START_TIME > datetime.timedelta(minutes=5):
+        return True
+    else:
+        return len(glob.glob(os.path.join("bots", "*"))) == 0
 
 
 
@@ -323,12 +331,15 @@ def update_html():
     
     status = " (nobody's here...)" if check_is_over() else " (battle in progress!)"
     
+    time_remaining = "{} remaining.".format(datetime.timedelta(minutes=5) - (datetime.datetime.now() - START_TIME))
     
     html = html.replace("{{tbody}}", tbody)
     html = html.replace("{{host}}", host)
     html = html.replace("{{bots}}", botstring)
     html = html.replace("{{status}}", status)
     html = html.replace("{{ports}}", ports_string)
+    html = html.replace("{{time_remaining}}", time_remaining)
+
     with open("map.html", "w+") as mapfile:
         mapfile.write(html)
 
