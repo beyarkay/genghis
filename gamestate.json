@@ -1,17 +1,17 @@
 {
-  "bots": {
-    "KNXBOY001": {
-      "default_icon": "a",
-      "student_number": "KNXBOY001"
-    },
-    "MSHSTU001": {
-      "default_icon": "b",
-      "student_number": "MSHSTU001"
-    }
-  },
   "ports": {
     "2": "MSHSTU001",
     "1": "KNXBOY001"
+  },
+  "bots": {
+    "MSHSTU001": {
+      "student_number": "MSHSTU001",
+      "default_icon": "a"
+    },
+    "KNXBOY001": {
+      "student_number": "KNXBOY001",
+      "default_icon": "b"
+    }
   },
   "self": "KNXBOY001"
 }
