@@ -186,13 +186,14 @@ def run():
     update_html()
 
 def step(directory):
-    result = subprocess.run(["python3", os.path.join(directory, "bot.py")], stdout=subprocess.PIPE)
-    cmd = str(result.stdout, encoding='utf8').strip()
-    execute_cmd(directory, cmd)
+    subprocess.run(["python3", os.path.join(directory, "bot.py")])
+    with open(os.path.join(directory, "bot_move.json")) as move_file:
+        bot_move = json.load(move_file)
+    execute_cmd(directory, bot_move)
 
-def execute_cmd(directory, cmd):
-    print("Executing cmd: {} is doing {}".format(directory, cmd))
+def execute_cmd(directory, bot_move):
     global layout
+    print("Executing bot_move['direction']: {} is doing {} {}".format(directory, bot_move['action'], bot_move['direction']))
     with open("{0}/{1}.json".format(directory, directory.split(os.sep)[-1]), "r") as statsfile:
         bot_data = json.load(statsfile)
 
@@ -204,24 +205,32 @@ def execute_cmd(directory, cmd):
                 break
         if bot[0] and bot[1]:
             break
+    if bot_move['action'] == "walk":
+        # Check if the move is legal
+        if (bot_move['direction'] == "l" and bot[0] - 1 >= 0) or \
+            (bot_move['direction'] == "r" and bot[0] + 1 < len(layout)) or \
+            (bot_move['direction'] == "u" and bot[1] - 1 >= 0) or \
+            (bot_move['direction'] == "d" and bot[1] + 1 < len(layout[0])):
+    
+            # Process the move, checking to see if the bot will collide with anything of interest
+            if get_cell(bot, bot_move['direction']) == ICON_AIR:
+                move_bot(bot, bot_move['direction'], bot_data['default_icon'])
+            
+            elif get_cell(bot, bot_move['direction']) == ICON_FRUIT:
+                move_bot(bot, bot_move['direction'], bot_data['default_icon'])
+                add_fruit()
+    
+            elif get_cell(bot, bot_move['direction']) in ICON_PORTS:
+                port_bot(bot, bot_data, get_cell(bot, bot_move['direction']))
+    
+    elif bot_move['action'] == "attack":
+        pass
 
-    # Check if the move is legal
-    if (cmd == "l" and bot[0] - 1 >= 0) or \
-        (cmd == "r" and bot[0] + 1 < len(layout)) or \
-        (cmd == "u" and bot[1] - 1 >= 0) or \
-        (cmd == "d" and bot[1] + 1 < len(layout[0])):
+    elif bot_move['action'] == "dump":
+        pass
 
-        # Process the move, checking to see if the bot will collide with anything of interest
-        if get_cell(bot, cmd) == ICON_AIR:
-            move_bot(bot, cmd, bot_data['default_icon'])
-        
-        elif get_cell(bot, cmd) == ICON_FRUIT:
-            move_bot(bot, cmd, bot_data['default_icon'])
-            add_fruit()
-
-        elif get_cell(bot, cmd) in ICON_PORTS:
-            port_bot(bot, bot_data, get_cell(bot, cmd))
-
+    elif bot_move['action'] == "":
+        pass
 
 def get_cell(bot, cmd):
     global layout

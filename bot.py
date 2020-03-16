@@ -16,6 +16,10 @@ def main():
     print(get_move(layout))
 
 def get_move(layout):
+    move = {
+        "action": '',
+        "direction": '',
+    }
     global bot_data
     fruit = []
     food = []
@@ -50,17 +54,20 @@ def get_move(layout):
     
 #    closest = get_closest(ports, bot)
 #    closest = get_closest(enemies, bot)
-
+    
+    move['action'] = "walk"
+    
     if closest[0] < bot[0]:
-        return "l"
+        move['direction'] = 'l'
     elif closest[0] > bot[0]:
-        return "r"
+        move['direction'] = 'r'
     elif closest[1] < bot[1]:
-        return "u"
+        move['direction'] = 'u'
     elif closest[1] > bot[1]:
-        return "d"
-    else:
-        return ""
+        move['direction'] = 'd'
+
+    with open('bot_move.json', "w+") as move_file:
+        json.dump(move, move_file)
 
 def get_closest(locations, bot_location):
     if not bot_location or not bot_location[0] or not bot_location[1]:
