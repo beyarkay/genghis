@@ -43,11 +43,11 @@ of the node where it is currently fighting
 ```
 ssh <Student number>@nightmare.cs.uct.ac.za
 <Enter your password>
-mkdir -p ~/public_html/genghis
+mkdir ~/public_html
 ```
-2. Clone this repo into `public_html/genghis`
+2. Clone this repo into `public_html/`
 ```
-cd ~/public_html/genghis
+cd ~/public_html
 git clone https://github.com/beyarkay/genghis.git
 ```
 
@@ -69,9 +69,9 @@ git clone https://github.com/beyarkay/genghis.git
 
 
 ## TODO
+* Flesh out the combat system
 * Automatically start the battleserver every hour through crontab, and automate this in the init.sh
 * Migrate all the host's bot files to a separate directory
 * Add in a difference checking between the bots
-* Allow the bots to eat each other
 * Add an easy-setup system
 * Improve the website

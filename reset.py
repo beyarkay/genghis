@@ -15,5 +15,5 @@ with open("gamestate.json", "w+") as gamestate:
 
 os.system("rm -rf bots/*")
 os.system("python3 bouncer.py KNXBOY001")
-os.system("python3 bouncer.py MSHSTU001")
+#os.system("python3 bouncer.py MSHSTU001")
 

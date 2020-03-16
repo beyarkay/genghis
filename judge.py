@@ -88,7 +88,6 @@ def add_bot_dir(sn):
             raise Exception("{}/bot.py collection failed: {}\nurl={}".format(sn, r.status_code, url))
     if r.ok:
         if not os.path.exists(full_path):
-            print("Creating ./{}/".format(full_path))
             os.mkdir(full_path)
         
         with open("{}/bot.py".format(full_path), "w+") as botfile:
@@ -101,6 +100,11 @@ def add_bot_dir(sn):
         bot_icon = gamestate['bots'][sn]['default_icon']
         if not bot_icon:
             available_icons = list("abcdefghijklmnopqrstuvwxyz")
+            # Give the first letter of the bot's surname/name preference when picking a symbol
+            available_icons.remove(sn[0].lower())
+            available_icons.insert(0, sn[0].lower())
+            available_icons.remove(sn[3].lower())
+            available_icons.insert(0, sn[3].lower())
             for bot in gamestate['bots'].values():
                 ic = bot['default_icon']
                 if ic: # new bots are initialised with an empty string as their icon
@@ -253,6 +257,17 @@ def add_fruit():
             break
 
 def port_bot(bot, bot_data, port):
+    """Attempt to transport the given bot to the given port (node)
+
+    Usually called whne a bot touches a port in the game map.
+    With a POST request, attempt to connect to the requested node and send through information
+    about the bot to be ported.
+    
+    On success, remove the bot from the current node.
+    On failure, raise an exception
+
+    """
+    
     global layout
     global ports
     with open("gamestate.json", "r+") as j:
@@ -269,30 +284,34 @@ def port_bot(bot, bot_data, port):
         print("Ported {} from {} to {}".format(bot_data['student_number'], bot, new_node))
         shutil.rmtree("bots/{}".format(bot_data['student_number'].upper()))
         layout[bot[0]][bot[1]] = ICON_AIR
+        del gamestate['bots'][bot_data['student_number']]
+        with open("layout.txt", "w+") as mapfile:
+            mapfile.writelines(["".join(list(i)) + "\n" for i in zip(*layout)])
+        with open("gamestate.json", "w") as j:
+            json.dump(gamestate, j, indent=2)
     else:
-        r = requests.post(
-            "https://people.cs.uct.ac.za/~{}/ghengis/requests.php".format(new_node), 
-            data=d
-        )
-        if r.ok:
-            print("Ported {} from {} to {}".format(bot_data['student_number'], bot, new_node))
-            shutil.rmtree("bots/{}".format(bot_data['student_number'].upper()))
-            layout[bot[0]][bot[1]] = ICON_AIR
-        else:
-            raise Exception("Port failed: {} to {} gave error {}".format(bot_data['student_number'], new_node, r.status_code))
-
-        
+        raise Exception("Port failed: {} to {} gave error {}".format(bot_data['student_number'], new_node, r.status_code))
+    
 
 def check_is_over():
+    """Check to see if the 5 minute time limit has been reached
+
+    Returns True if over 5 minutes has passed since the script started
+    """
+
     global START_TIME
-    if datetime.datetime.now() - START_TIME > datetime.timedelta(minutes=5):
-        return True
-    else:
-        return len(glob.glob(os.path.join("bots", "*"))) == 0
+    return datetime.datetime.now() - START_TIME > datetime.timedelta(minutes=5)
 
 
 
 def update_html():
+    """Update map.html to represent the current state of the game
+
+    Using map_template.html as a template file, update map.html with some script 
+    variables/gamestate.json variables.
+    map.html is inserted into a div element in index.html by some JavaScript in the index.html file
+
+    """
     with open("map_template.html", "r") as templatefile:
         html = "\n".join(templatefile.readlines())
     with open("gamestate.json", "r+") as j:
@@ -313,7 +332,6 @@ def update_html():
         tbody += "</tr>"
     tbody += "</tbody>"
 
-    # TODO this may give troubles with file reading permissions
     host = os.path.abspath('../..').split(os.sep)[-1].upper() 
     host = "<a href=\"https://people.cs.uct.ac.za/~"+host+"/genghis/\">" + host + "</a>"
     
@@ -330,8 +348,7 @@ def update_html():
     
     
     status = " (nobody's here...)" if check_is_over() else " (battle in progress!)"
-    
-    time_remaining = "{} remaining.".format(datetime.timedelta(minutes=5) - (datetime.datetime.now() - START_TIME))
+    time_remaining = "{} remaining.".format(str(datetime.timedelta(minutes=5) - (datetime.datetime.now() - START_TIME)))
     
     html = html.replace("{{tbody}}", tbody)
     html = html.replace("{{host}}", host)
