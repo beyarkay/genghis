@@ -1,19 +1,21 @@
 import json
 import os
-
+bot_data = {}
+student_number = ""
 
 def main():
     global bot_data
-    with open("layout.txt", "r") as mapfile:
+    global student_number
+    student_number = os.path.abspath(__file__).split(os.sep)[-2].upper()
+
+    with open("bots/{0}/layout.txt".format(student_number), "r") as mapfile:
         layout = mapfile.readlines()
     
 
-    student_number = os.path.abspath(__file__).split(os.sep)[-2].upper()
-#    print("I am {} in {}".format(student_number, __file__))
     with open("bots/{0}/{0}.json".format(student_number), "r") as statsfile:
         bot_data = json.load(statsfile)
 
-    print(get_move(layout))
+    get_move(layout)
 
 def get_move(layout):
     move = {
@@ -21,52 +23,52 @@ def get_move(layout):
         "direction": '',
     }
     global bot_data
-    fruit = []
-    food = []
     walls = []
     ports = []
-    bot = (None, None)
+    bot_loc = (None, None)
     enemies = []
-    enemy_icons = list("abcdefghijklmnopqrstuvwxyz")
+    enemy_icons = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    coin_icons = [i.lower() for i in enemy_icons]
+    coins = {}
     enemy_icons.remove(bot_data['default_icon'])
     # For the basic move, simply try to go towards the fruit
     for c, col in enumerate(layout):
         for r, item in enumerate(col):
-            if item.lower() == bot_data['default_icon']:
-                bot = (r, c)
+            if item == bot_data['default_icon']:
+                bot_loc = (r, c)
 
-            elif item == ".":
-                food.append((r, c))
-
-            elif item == "@":
-                fruit.append((r, c))
-           
             elif item == "#":
                 walls.append((r, c))
             
             elif item in list("0123456789"):
                 ports.append((r, c))
             
+            elif item in coin_icons:
+                if item in coins:
+                    coins[item].append((r, c))
+                else:
+                    coins[item] = [(r, c)]
+
             elif item in enemy_icons:
                 enemies.append((r, c))
-    # Figure out the closest fruit:
-    closest = get_closest(fruit, bot)
-    
-#    closest = get_closest(ports, bot)
-#    closest = get_closest(enemies, bot)
+
+    if coins.keys(): # If there are coins to be had, go get them 
+        closest = get_closest(list(coins.values())[0], bot_loc)
+    else: # Otherwise, go to a port and move on to the next node 
+        closest = get_closest(ports, bot_loc)
     
     move['action'] = "walk"
     
-    if closest[0] < bot[0]:
+    if closest[0] < bot_loc[0]:
         move['direction'] = 'l'
-    elif closest[0] > bot[0]:
+    elif closest[0] > bot_loc[0]:
         move['direction'] = 'r'
-    elif closest[1] < bot[1]:
+    elif closest[1] < bot_loc[1]:
         move['direction'] = 'u'
-    elif closest[1] > bot[1]:
+    elif closest[1] > bot_loc[1]:
         move['direction'] = 'd'
 
-    with open('bot_move.json', "w+") as move_file:
+    with open('bots/{}/bot_move.json'.format(student_number), "w+") as move_file:
         json.dump(move, move_file)
 
 def get_closest(locations, bot_location):

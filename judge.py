@@ -9,7 +9,6 @@ import json
 import time
 import glob
 
-bot_paths = ["{}/bot.py".format(arg) for arg in sys.argv[1:]]
 layout = []
 count = 0
 
@@ -22,14 +21,12 @@ CMD_DOWN = 'd'
 
 START_TIME = datetime.datetime.now()
 
-ICON_BOTS = list("abcdefghijklmnopqrstuvwxyz")
-ICON_FOOD = '.'
-ICON_FRUIT = '@'
+ICON_BOTS = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+ICON_COINS = [l.lower() for l in ICON_BOTS]
 ICON_SOLID = '#'
 ICON_SPAWN = "_"
 ICON_PORTS = [str(i) for i in list(range(0, 20))]
 ICON_AIR = ' '
-ICON_SOFT = sum([ICON_BOTS, [ICON_FOOD], [ICON_FRUIT]], [])
 
 def main():
     # TODO currently gamestate.json doesn't have any checking to see if the file is already opened by bouncer.py
@@ -52,7 +49,6 @@ def main():
     # Read gamestate.json to get a list of the bots
     with open("gamestate.json", "r+") as j:
         gamestate = json.load(j)
-    print(SPAWN_LOCATIONS)
     # Loop through the bots, and add them to the map at one of the specified spawn locations
     for bot in gamestate['bots'].values():
         if spawn_locations:
@@ -63,6 +59,8 @@ def main():
     # Now replace the unused spawn locations with ICON_AIR
     for x_pos, y_pos in spawn_locations:        
         layout[x_pos][y_pos] = ICON_AIR
+    
+    add_coin(gamestate['coins'][gamestate['self']], n=5)
 
     # Save the game-ready 2D list to layout.txt, which will be copied into the bots' directories later
     with open("layout.txt", "w+") as mapfile:
@@ -99,12 +97,12 @@ def add_bot_dir(sn):
 
         bot_icon = gamestate['bots'][sn]['default_icon']
         if not bot_icon:
-            available_icons = list("abcdefghijklmnopqrstuvwxyz")
+            available_icons = ICON_BOTS[:]
             # Give the first letter of the bot's surname/name preference when picking a symbol
-            available_icons.remove(sn[0].lower())
-            available_icons.insert(0, sn[0].lower())
-            available_icons.remove(sn[3].lower())
-            available_icons.insert(0, sn[3].lower())
+            available_icons.remove(sn[0])
+            available_icons.insert(0, sn[0])
+            available_icons.remove(sn[3])
+            available_icons.insert(0, sn[3])
             for bot in gamestate['bots'].values():
                 ic = bot['default_icon']
                 if ic: # new bots are initialised with an empty string as their icon
@@ -159,7 +157,9 @@ def run():
         if gamestate['bots'].keys():
             print("\n===============Round {}===============".format(count))
         else:
-            print("No bots in gamestate: " + gamestate)
+            print("No bots in gamestate, sleeping")
+            time.sleep(1)
+            continue
 
         for sn in gamestate['bots'].keys():
             directory = "bots/" + sn
@@ -193,46 +193,54 @@ def step(directory):
 
 def execute_cmd(directory, bot_move):
     global layout
-    print("Executing bot_move['direction']: {} is doing {} {}".format(directory, bot_move['action'], bot_move['direction']))
+    print("Executing cmd: {} is doing {} {}".format(directory, bot_move['action'], bot_move['direction']))
     with open("{0}/{1}.json".format(directory, directory.split(os.sep)[-1]), "r") as statsfile:
         bot_data = json.load(statsfile)
 
-    bot = (None, None)
+    bot_loc = (None, None)
     for x, col in enumerate(layout):
         for y, item in enumerate(col):
             if item == bot_data['default_icon']:
-                bot = (x, y)
+                bot_loc = (x, y)
                 break
-        if bot[0] and bot[1]:
+        if bot_loc[0] and bot_loc[1]:
             break
     if bot_move['action'] == "walk":
         # Check if the move is legal
-        if (bot_move['direction'] == "l" and bot[0] - 1 >= 0) or \
-            (bot_move['direction'] == "r" and bot[0] + 1 < len(layout)) or \
-            (bot_move['direction'] == "u" and bot[1] - 1 >= 0) or \
-            (bot_move['direction'] == "d" and bot[1] + 1 < len(layout[0])):
+        if (bot_move['direction'] == "l" and bot_loc[0] - 1 >= 0) or \
+            (bot_move['direction'] == "r" and bot_loc[0] + 1 < len(layout)) or \
+            (bot_move['direction'] == "u" and bot_loc[1] - 1 >= 0) or \
+            (bot_move['direction'] == "d" and bot_loc[1] + 1 < len(layout[0])):
     
-            # Process the move, checking to see if the bot will collide with anything of interest
-            if get_cell(bot, bot_move['direction']) == ICON_AIR:
-                move_bot(bot, bot_move['direction'], bot_data['default_icon'])
+            # Process the move, checking to see if the bot_loc will collide with anything of interest
+            if get_cell(bot_loc, bot_move['direction']) == ICON_AIR:
+                move_bot(bot_loc, bot_move['direction'], bot_data['default_icon'])
             
-            elif get_cell(bot, bot_move['direction']) == ICON_FRUIT:
-                move_bot(bot, bot_move['direction'], bot_data['default_icon'])
-                add_fruit()
-    
-            elif get_cell(bot, bot_move['direction']) in ICON_PORTS:
-                port_bot(bot, bot_data, get_cell(bot, bot_move['direction']))
+            if get_cell(bot_loc, bot_move['direction']) in ICON_COINS:
+                grab_coin()
+                move_bot(bot_loc, bot_move['direction'], bot_data['default_icon'])
+             
+            elif get_cell(bot_loc, bot_move['direction']) in ICON_PORTS:
+                port_bot(bot_loc, bot_data, get_cell(bot_loc, bot_move['direction']))
     
     elif bot_move['action'] == "attack":
-        pass
-
+        # Check if there's a bot_loc in the cell that the bot_loc is attacking
+        if get_cell(bot_loc, bot_move['direction']) in ICON_BOTS:
+            attack(bot_loc, bot_move['direction'], bot_move['using'])
+        
     elif bot_move['action'] == "dump":
         pass
 
     elif bot_move['action'] == "":
         pass
 
-def get_cell(bot, cmd):
+def attack(bot_loc, direction, using):
+    pass
+
+def grab_coin():
+    print("grab_coin not implemented")
+
+def get_cell(bot_loc, cmd):
     global layout
     cmd_dict = {
         "l": (-1,  0),
@@ -241,10 +249,10 @@ def get_cell(bot, cmd):
         "d": ( 0,  1),
         "":  ( 0,  0)
     }
-    return layout[bot[0] + cmd_dict[cmd][0]][bot[1] + cmd_dict[cmd][1]]
+    return layout[bot_loc[0] + cmd_dict[cmd][0]][bot_loc[1] + cmd_dict[cmd][1]]
 
 
-def move_bot(bot, cmd, curr_bot_icon):
+def move_bot(bot_loc, cmd, curr_bot_icon):
     global layout
     cmd_dict = {
         "l": (-1,  0),
@@ -254,18 +262,24 @@ def move_bot(bot, cmd, curr_bot_icon):
         "":  ( 0,  0)
     }
 
-    layout[bot[0]][bot[1]] = ICON_AIR 
-    layout[bot[0] + cmd_dict[cmd][0]][bot[1] + cmd_dict[cmd][1]] = curr_bot_icon 
+    layout[bot_loc[0]][bot_loc[1]] = ICON_AIR 
+    layout[bot_loc[0] + cmd_dict[cmd][0]][bot_loc[1] + cmd_dict[cmd][1]] = curr_bot_icon 
 
-def add_fruit():
+def add_coin(coin_icon, n=1):
     global layout
-    while True:
-        location = (random.randint(0, len(layout) - 1), random.randint(0, len(layout[0]) - 1))
-        if get_cell(location, "") == ICON_AIR:
-            layout[location[0]][location[1]] = ICON_FRUIT
-            break
+    for i in range(n):
+        inf_loop_count = 0
+        while True:
+            location = (random.randint(0, len(layout) - 1), random.randint(0, len(layout[0]) - 1))
+            if get_cell(location, "") == ICON_AIR:
+                layout[location[0]][location[1]] = coin_icon
+                break
 
-def port_bot(bot, bot_data, port):
+            inf_loop_count += 1
+            if inf_loop_count > 200:
+                raise Exception("Infinite loop: attempting to add coin to map")
+
+def port_bot(bot_loc, bot_data, port):
     """Attempt to transport the given bot to the given port (node)
 
     Usually called whne a bot touches a port in the game map.
@@ -290,9 +304,9 @@ def port_bot(bot, bot_data, port):
         data=d
     )
     if r.ok:
-        print("Ported {} from {} to {}".format(bot_data['student_number'], bot, new_node))
+        print("Ported {} from {} to {}".format(bot_data['student_number'], bot_loc, new_node))
         shutil.rmtree("bots/{}".format(bot_data['student_number'].upper()))
-        layout[bot[0]][bot[1]] = ICON_AIR
+        layout[bot_loc[0]][bot_loc[1]] = ICON_AIR
         del gamestate['bots'][bot_data['student_number']]
         with open("layout.txt", "w+") as mapfile:
             mapfile.writelines(["".join(list(i)) + "\n" for i in zip(*layout)])
