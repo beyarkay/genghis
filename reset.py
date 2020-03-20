@@ -1,6 +1,7 @@
+import subprocess
 import os
 import json
-sn = os.path.abspath('../..').split(os.sep)[-1].upper() 
+sn = os.path.abspath(__file__).split(os.sep)[-4].upper() 
 data = {
     "bots": {},
     "ports": {
@@ -17,6 +18,13 @@ data = {
 with open("gamestate.json", "w+") as gamestate:
     json.dump(data, gamestate, 2)
 
-os.system("rm -rf bots/*")
-os.system("python3 bouncer.py {}".format(sn))
+directory ="/" + os.path.join(*os.path.abspath(__file__).split(os.sep)[:-1]) 
+
+cmd = ["rm", "-rf", os.path.join(directory, "bots/*")]
+print(" ".join(cmd))
+subprocess.run(cmd) 
+
+cmd = ["python3", os.path.join(directory, "bouncer.py"), sn]
+print(" ".join(cmd))
+subprocess.run(cmd) 
 

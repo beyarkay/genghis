@@ -1,18 +1,18 @@
 import json
 import os
 bot_data = {}
-student_number = ""
+sn = ""
+bot_dir = "/" + os.path.join(*os.path.abspath(__file__).split(os.sep)[:-1])
 
 def main():
     global bot_data
-    global student_number
-    student_number = os.path.abspath(__file__).split(os.sep)[-2].upper()
+    global sn
+    sn = os.path.abspath(__file__).split(os.sep)[-2].upper()
 
-    with open("bots/{0}/layout.txt".format(student_number), "r") as mapfile:
+    with open(os.path.join(bot_dir, "layout.txt"), "r") as mapfile:
         layout = mapfile.readlines()
     
-
-    with open("bots/{0}/{0}.json".format(student_number), "r") as statsfile:
+    with open(os.path.join(bot_dir, sn + ".json"), "r") as statsfile:
         bot_data = json.load(statsfile)
 
     get_move(layout)
@@ -68,7 +68,7 @@ def get_move(layout):
     elif closest[1] > bot_loc[1]:
         move['direction'] = 'd'
 
-    with open('bots/{}/bot_move.json'.format(student_number), "w+") as move_file:
+    with open(os.path.join(bot_dir, "bot_move.json"), "w+") as move_file:
         json.dump(move, move_file)
 
 def get_closest(locations, bot_location):

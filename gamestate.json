@@ -1,11 +1,1 @@
-{
-  "ports": {
-    "1": "KNXBOY001",
-    "2": "MSHSTU001"
-  },
-  "self": "KNXBOY001",
-  "bots": {},
-  "coins": {
-    "KNXBOY001": "b"
-  }
-}
+{"ports": {"1": "KNXBOY001", "2": "MSHSTU001"}, "self": "MSHSTU001", "coins": {"MSHSTU001": "s"}, "bots": {}}

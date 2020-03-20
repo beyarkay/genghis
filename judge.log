@@ -1,0 +1,243 @@
+/home/k/knxboy001/public_html/genghis
+Attempting new bot: KNXBOY001
+Bot data added to botjson: {'student_number': 'KNXBOY001', 'default_icon': 'B'}
+5 11
+Adding KNXBOY001(B) to map at (5, 11)
+Starting battle on: 
+https://people.cs.uct.ac.za/~knxboy001/genghis/
+
+{'self': 'KNXBOY001', 'ports': {'2': 'MSHSTU001', '1': 'KNXBOY001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 0}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 1===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk l
+sn=KNXBOY001
+0:04:58.858044 left
+{'self': 'KNXBOY001', 'ports': {'2': 'MSHSTU001', '1': 'KNXBOY001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 0}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 2===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk l
+sn=KNXBOY001
+0:04:57.785534 left
+{'self': 'KNXBOY001', 'ports': {'2': 'MSHSTU001', '1': 'KNXBOY001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 0}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 3===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk l
+sn=KNXBOY001
+0:04:56.715864 left
+{'self': 'KNXBOY001', 'ports': {'2': 'MSHSTU001', '1': 'KNXBOY001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 0}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 4===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk l
+sn=KNXBOY001
+0:04:55.651404 left
+{'self': 'KNXBOY001', 'ports': {'2': 'MSHSTU001', '1': 'KNXBOY001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 0}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 5===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk d
+sn=KNXBOY001
+0:04:54.554578 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 1}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 6===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk r
+sn=KNXBOY001
+0:04:53.469181 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 1}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 7===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk u
+sn=KNXBOY001
+0:04:52.404971 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 1}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 8===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk u
+sn=KNXBOY001
+0:04:51.343160 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 1}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 9===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk u
+sn=KNXBOY001
+0:04:50.276592 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 1}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 10===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk u
+sn=KNXBOY001
+0:04:49.201815 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 1}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 11===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk u
+sn=KNXBOY001
+0:04:48.127501 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 1}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 12===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk u
+sn=KNXBOY001
+0:04:47.066354 left
+{'self': 'KNXBOY001', 'ports': {'2': 'MSHSTU001', '1': 'KNXBOY001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 2}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 13===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk u
+sn=KNXBOY001
+0:04:45.979400 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 3}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 14===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk r
+sn=KNXBOY001
+0:04:44.889282 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 3}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 15===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk r
+sn=KNXBOY001
+0:04:43.809124 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 3}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 16===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk u
+sn=KNXBOY001
+0:04:42.730412 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 3}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 17===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk u
+sn=KNXBOY001
+0:04:41.658339 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 3}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 18===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk u
+sn=KNXBOY001
+0:04:40.570947 left
+{'self': 'KNXBOY001', 'ports': {'2': 'MSHSTU001', '1': 'KNXBOY001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 4}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 19===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk r
+sn=KNXBOY001
+0:04:39.513726 left
+{'self': 'KNXBOY001', 'ports': {'2': 'MSHSTU001', '1': 'KNXBOY001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 4}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 20===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk r
+sn=KNXBOY001
+0:04:38.454030 left
+{'self': 'KNXBOY001', 'ports': {'2': 'MSHSTU001', '1': 'KNXBOY001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 4}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 21===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk u
+sn=KNXBOY001
+0:04:37.354345 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 5}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 22===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk r
+sn=KNXBOY001
+0:04:36.301025 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 5}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 23===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk r
+sn=KNXBOY001
+0:04:35.213845 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 5}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 24===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk r
+sn=KNXBOY001
+0:04:34.145636 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 5}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 25===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk r
+sn=KNXBOY001
+0:04:33.083059 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 5}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 26===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk r
+sn=KNXBOY001
+0:04:31.985682 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 5}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 27===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk r
+sn=KNXBOY001
+0:04:30.881900 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 5}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 28===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk r
+sn=KNXBOY001
+0:04:29.822111 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 5}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 29===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk r
+sn=KNXBOY001
+0:04:28.745914 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 5}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 30===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk d
+sn=KNXBOY001
+0:04:27.646254 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 5}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 31===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk d
+sn=KNXBOY001
+0:04:26.551883 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 5}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 32===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk d
+sn=KNXBOY001
+0:04:25.454414 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 5}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 33===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk d
+sn=KNXBOY001
+0:04:24.348755 left
+{'self': 'KNXBOY001', 'ports': {'2': 'MSHSTU001', '1': 'KNXBOY001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 6}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 34===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk l
+sn=KNXBOY001
+0:04:23.268333 left
+{'self': 'KNXBOY001', 'ports': {'2': 'MSHSTU001', '1': 'KNXBOY001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 6}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 35===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk l
+sn=KNXBOY001
+0:04:22.179569 left
+{'self': 'KNXBOY001', 'ports': {'2': 'MSHSTU001', '1': 'KNXBOY001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 6}}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 36===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk d
+sn=KNXBOY001
+0:04:21.080947 left
+{'self': 'KNXBOY001', 'ports': {'2': 'MSHSTU001', '1': 'KNXBOY001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 6}}, 'MSHSTU001': {'student_number': 'MSHSTU001', 'default_icon': ''}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 37===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk d
+sn=KNXBOY001
+Attempting new bot: MSHSTU001
+Bot data added to botjson: {'student_number': 'MSHSTU001', 'default_icon': 'S'}
+9 11
+Adding MSHSTU001(S) to map at (9, 11)
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/MSHSTU001 is doing walk d
+sn=MSHSTU001
+0:04:19.757034 left
+{'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 6}}, 'MSHSTU001': {'student_number': 'MSHSTU001', 'default_icon': 'S'}}, 'coins': {'KNXBOY001': 'b'}}
+
+===============Round 38===============
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/KNXBOY001 is doing walk d
+sn=KNXBOY001
+Executing cmd: /home/k/knxboy001/public_html/genghis/bots/MSHSTU001 is doing walk d
+sn=MSHSTU001

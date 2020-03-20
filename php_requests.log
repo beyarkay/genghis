@@ -1,0 +1,19 @@
+
+DATE: 2020-03-18T12:17:20+02:00: python3 bouncer.py 'KNXBOY001' 2>&1
+    {'coins': {'KNXBOY001': 'b'}, 'bots': {'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': ''}, 'MSHSTU001': {'coins': {'KNXBOY001': 3}, 'student_number': 'MSHSTU001', 'default_icon': 'S'}}, 'self': 'KNXBOY001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}}
+DATE: 2020-03-18T12:57:33+02:00: python3 bouncer.py 'MSHSTU001' 2>&1
+    {'bots': {'MSHSTU001': {'student_number': 'MSHSTU001', 'default_icon': ''}}, 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'self': 'MSHSTU001', 'coins': {'MSHSTU001': 's'}}
+DATE: 2020-03-18T13:42:23+02:00: python3 bouncer.py 'KNXBOY001' 2>&1
+    {'bots': {'KNXBOY001': {'default_icon': '', 'student_number': 'KNXBOY001'}}, 'coins': {'MSHSTU001': 's'}, 'self': 'MSHSTU001', 'ports': {'2': 'MSHSTU001', '1': 'KNXBOY001'}}
+DATE: 2020-03-18T13:42:43+02:00: python3 bouncer.py 'KNXBOY001' 2>&1
+    {'coins': {'MSHSTU001': 's'}, 'bots': {'KNXBOY001': {'default_icon': '', 'student_number': 'KNXBOY001'}}, 'ports': {'2': 'MSHSTU001', '1': 'KNXBOY001'}, 'self': 'MSHSTU001'}
+DATE: 2020-03-18T13:43:00+02:00: python3 bouncer.py 'KNXBOY001' 2>&1
+    {'self': 'MSHSTU001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'coins': {'MSHSTU001': 's'}, 'bots': {'KNXBOY001': {'default_icon': '', 'student_number': 'KNXBOY001'}}}
+DATE: 2020-03-18T13:43:14+02:00: python3 bouncer.py 'KNXBOY001' 2>&1
+    {'coins': {'MSHSTU001': 's'}, 'self': 'MSHSTU001', 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'default_icon': '', 'student_number': 'KNXBOY001'}}}
+DATE: 2020-03-19T15:07:35+02:00: python3 bouncer.py 'MSHSTU001' 2>&1
+    {'self': 'KNXBOY001', 'ports': {'2': 'MSHSTU001', '1': 'KNXBOY001'}, 'coins': {'KNXBOY001': 'b'}, 'bots': {'MSHSTU001': {'student_number': 'MSHSTU001', 'default_icon': ''}, 'KNXBOY001': {'student_number': 'KNXBOY001', 'default_icon': 'B', 'coins': {'KNXBOY001': 9}}}}
+DATE: 2020-03-19T15:07:53+02:00: python3 bouncer.py 'MSHSTU001' 2>&1
+    {'ports': {'2': 'MSHSTU001', '1': 'KNXBOY001'}, 'coins': {'KNXBOY001': 'b'}, 'bots': {'MSHSTU001': {'student_number': 'MSHSTU001', 'default_icon': ''}, 'KNXBOY001': {'student_number': 'KNXBOY001', 'coins': {'KNXBOY001': 10}, 'default_icon': 'B'}}, 'self': 'KNXBOY001'}
+DATE: 2020-03-20T09:26:26+02:00: python3 bouncer.py 'MSHSTU001' 2>&1
+    {'self': 'KNXBOY001', 'coins': {'KNXBOY001': 'b'}, 'ports': {'1': 'KNXBOY001', '2': 'MSHSTU001'}, 'bots': {'KNXBOY001': {'coins': {'KNXBOY001': 6}, 'default_icon': 'B', 'student_number': 'KNXBOY001'}, 'MSHSTU001': {'default_icon': '', 'student_number': 'MSHSTU001'}}}
