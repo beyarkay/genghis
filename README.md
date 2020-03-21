@@ -69,6 +69,8 @@ git clone https://github.com/beyarkay/genghis.git
 
 
 ## TODO
+* Setup AJAX properly to only load map.html when changes have happened
+* Migrate judge.update_html() to javascript
 * Flesh out the combat system
 * Automatically start the battleserver every hour through crontab, and automate this in the init.sh
 * Migrate all the host's bot files to a separate directory

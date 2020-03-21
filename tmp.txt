@@ -1,0 +1,58 @@
+-rwx------ 1 knxboy001 knxboy001 2.8K Mar 20 11:14 README.md
+-rwxr--r-- 1 knxboy001 knxboy001 2.8K Mar 19 13:45 __bot.py
+-rwxr-xr-x 1 knxboy001 knxboy001 1.3K Mar 19 13:10 __bouncer.py
+-rwxrwxrwx 1 knxboy001 knxboy001  109 Mar 20 09:13 __gamestate.json
+-rw------- 1 knxboy001 knxboy001  15K Mar 20 09:13 __judge.log
+-rwx------ 1 knxboy001 knxboy001  17K Mar 20 14:04 __judge.py
+-rwx------ 1 knxboy001 knxboy001  506 Mar 20 09:13 __layout.txt
+-rwx------ 1 knxboy001 knxboy001  506 Mar 19 12:41 __layout_template.txt
+-rwxr--r-- 1 knxboy001 knxboy001  19K Mar 20 09:13 __map.html
+-rwxrwxrwx 1 knxboy001 knxboy001 2.6K Mar 20 09:13 __php_requests.log
+-rwxr-xr-x 1 knxboy001 knxboy001  296 Mar 19 12:41 __requests.php
+-rwx------ 1 knxboy001 knxboy001  627 Mar 20 11:33 __reset.py
+-rwxr--r-- 1 knxboy001 knxboy001  869 Mar 19 12:41 __styles.css
+-rwxr--r-- 1 knxboy001 knxboy001 1.2K Mar 20 14:44 index.html
+-rwx------ 1 knxboy001 knxboy001  484 Mar 20 14:58 init.sh
+-rwx------ 1 knxboy001 knxboy001 2.6K Mar 20 14:52 start_battle.py
+-rw------- 1 knxboy001 knxboy001    0 Mar 20  2020 tmp.txt
+
+bots:
+total 20K
+drwxr-xr-x 5 knxboy001 knxboy001 4.0K Mar 20 14:44 .
+drwxr-xr-x 8 knxboy001 knxboy001 4.0K Mar 20 14:58 ..
+drwxr-xr-x 2 knxboy001 knxboy001 4.0K Mar 19 12:54 .KNXBOY001
+drwx------ 2 knxboy001 knxboy001 4.0K Mar 19 14:54 .MSHSTU001
+drwx------ 2 knxboy001 knxboy001 4.0K Mar 20 11:58 MSHSTU001
+
+logs:
+total 28K
+drwxr--r-- 2 knxboy001 knxboy001 4.0K Mar 20 09:47 .
+drwxr-xr-x 8 knxboy001 knxboy001 4.0K Mar 20 14:58 ..
+-rwxr--r-- 1 knxboy001 knxboy001  15K Mar 20 09:47 judge.log
+-rwxr--r-- 1 knxboy001 knxboy001  291 Mar 20 11:03 requests.log
+
+node:
+total 48K
+drwxr--r-- 2 knxboy001 knxboy001 4.0K Mar 20 14:46 .
+drwxr-xr-x 8 knxboy001 knxboy001 4.0K Mar 20 14:58 ..
+-rwxr--r-- 1 knxboy001 knxboy001 4.0K Mar 20 10:06 bot.py
+-rwxr-xr-x 1 knxboy001 knxboy001 1.5K Mar 20 10:15 bouncer.py
+-rwxr--r-- 1 knxboy001 knxboy001  17K Mar 20 14:34 judge.py
+-rwxr--r-- 1 knxboy001 knxboy001  506 Mar 20 09:49 layout_template.txt
+-rwxr--r-- 1 knxboy001 knxboy001  336 Mar 19 12:41 map_template.html
+-rwxr-xr-x 1 knxboy001 knxboy001  414 Mar 20 11:04 requests.php
+
+vars:
+total 16K
+drwxr-xr-x 2 knxboy001 knxboy001 4.0K Mar 20 10:41 .
+drwxr-xr-x 8 knxboy001 knxboy001 4.0K Mar 20 14:58 ..
+-rwxrwxrwx 1 knxboy001 knxboy001  229 Mar 20 10:41 gamestate.json
+-rwx------ 1 knxboy001 knxboy001  506 Mar 20 09:47 layout.txt
+
+www:
+total 36K
+drwxr-xr-x 2 knxboy001 knxboy001 4.0K Mar 20 09:45 .
+drwxr-xr-x 8 knxboy001 knxboy001 4.0K Mar 20 14:58 ..
+-rwxr-xr-x 1 knxboy001 knxboy001 1.1K Mar 20 09:45 index.html
+-rwxr-xr-x 1 knxboy001 knxboy001  19K Mar 20 09:45 map.html
+-rwxr-xr-x 1 knxboy001 knxboy001  869 Mar 20 09:45 styles.css

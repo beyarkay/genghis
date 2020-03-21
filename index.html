@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="www/styles.css">
         <title id="title"></title>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     </head>
@@ -12,18 +12,19 @@
     
     
     <script>
-        var loc = window.location.pathname;
-        loc = loc.substring(2, loc.length - 9);
-        document.getElementById("title").innerHTML = "Genghis Battle on " + loc;
+        let loc = window.location.pathname;
+        // loc is now "/~KNXBOY001/genghis/"
+        let sn = loc.split("/")[0].substring(2);
+        document.getElementById("title").innerHTML = "Genghis Battle on " + sn;
         let interval = 250;
         $.ajaxSetup ({
             // Disable caching of AJAX responses
                 cache: false
         });
         function loadMap() {
-            var loc = window.location.pathname;
-            var dir = loc.substring(0, loc.lastIndexOf('/'));
-            $("div").load("https://people.cs.uct.ac.za" + loc + "map.html");
+            // Every `interval` milliseconds, reload the page with the updated map.html
+            let genghis_dir = window.location.pathname;
+            $("div").load("https://people.cs.uct.ac.za" + genghis_dir + "www/map.html");
             setTimeout(loadMap, interval);
         }
         setTimeout(loadMap, interval);
