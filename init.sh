@@ -10,6 +10,7 @@ mkdir -p bots
 chmod 755 -R www vars bots
 chmod 777 vars/gamestate.json
 IFS='/' read -r -a array <<< $DIR
-crontab -l | { cat; echo "50 7-16 * * 1-5 /usr/bin/python3 $pwd/start_battle.py ${array[3]^^}"; } | crontab -
+pwd=`pwd`
+crontab -l | head -n -1 | { cat; echo "50 7-16 * * 1-5 /usr/bin/python3 $pwd/start_battle.py ${array[3]^^}"; } | crontab -
 cd $OLD_WD
 

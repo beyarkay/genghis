@@ -14,7 +14,7 @@
     <script>
         let loc = window.location.pathname;
         // loc is now "/~KNXBOY001/genghis/"
-        let sn = loc.split("/")[0].substring(2);
+        let sn = loc.split("/")[1].substring(1);
         document.getElementById("title").innerHTML = "Genghis Battle on " + sn;
         let interval = 250;
         $.ajaxSetup ({
