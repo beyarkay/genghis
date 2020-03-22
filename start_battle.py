@@ -43,6 +43,7 @@ def main():
     print("\n{} nodes started:\n\t{}".format(len(sys.argv[1:]), "\n\t".join(node_str)))
 
 def reset_node(sn):
+    #TODO Update this to write to logs/ instead of the gamestate.json
     """Clear any game variables that weren't left clean, and get the node ready for a new battle
 
     """
