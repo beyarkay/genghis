@@ -3,11 +3,12 @@ OLD_WD=`pwd`
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd $DIR
 chmod 700 init.sh start_battle.py README.md
-chmod 744 -R index.html logs node
+chmod 744 -fR index.html node
 chmod 755 node node/bouncer.py
 
 mkdir -p bots
 chmod 755 -R www vars bots
+chmod 777 -R logs
 chmod 777 vars/gamestate.json
 IFS='/' read -r -a array <<< $DIR
 pwd=`pwd`
