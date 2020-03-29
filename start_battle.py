@@ -42,6 +42,7 @@ def main():
             cmd = ['rsync', '-r', '--delete', 
                     "--exclude", "bots/", 
                     "--exclude", "logs/*.json", 
+                    "--exclude", "node/ports.txt", 
                     "--exclude", "vars/", 
                     "--exclude", ".git", 
                     '/home/k/knxboy001/public_html/genghis/', '{}'.format(genghis_dir)]
@@ -74,12 +75,14 @@ def reset_node(sn):
     """
     global DEBUG
     genghis_dir = os.path.join("/home", sn[0].lower(), sn.lower(), "public_html", "genghis")
+
+    # Check the registered edges, and add them as portals to the gamestate
+    with open(os.path.join(genghis_dir, "node", "ports.txt"), "r") as ports_file:
+        ports = ports_file.readlines()
+    ports_dir = {str(k): v for k, v in zip(list(range(1, len(ports) + 1)), ports)}
     gamestate = {
         "bots": {},
-        "ports": {
-            "1":"KNXBOY001",
-            "2":"MSHSTU001",
-        },
+        "ports": ports_dir,
         "self": sn,
         "coins": {
             sn: sn[3].lower()

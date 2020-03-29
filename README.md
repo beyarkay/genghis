@@ -55,7 +55,10 @@ git clone https://github.com/beyarkay/genghis.git
 ```
 ./init.sh
 ```
-4. You're Done! at least, your as up to date as you can be.
+4. Now, you need to get someone else who's already setup to add you to their `node/ports.txt`. Have them run this command:
+```
+cd ~/public_html/genghis && echo "<YOUR STUDENT NUMBER HERE>" >> node/ports.txt
+```
 
 
 
