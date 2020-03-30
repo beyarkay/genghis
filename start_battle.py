@@ -12,6 +12,14 @@ from shlex import split
 
 DEBUG = False
 def main():
+    """Start a battle on the nodes belonging to the student numbers given as cmdline arguments
+
+    During testing, copy over the KNXBOY001/public_html/genghis directory to the given nodes to make sure they're up to date
+
+    This script will update the nodes given as cmdline args, reset them with some default parameters and start up their judge systems.
+    This is intended to be used for testing only, and mimics what crontab should do on a daily basis
+    
+    """
     global DEBUG
     node_str = []
     stop = len(sys.argv)
@@ -19,33 +27,46 @@ def main():
     if sys.argv[-1] == "t":
         DEBUG = True
         stop -= 1
-    sn = sys.argv[1] 
-    RE_SN = re.compile(r"([BCDFGHJKLMNPQRSTVWXYZ]{3}\w{3}\d{3})")
-    if not re.match(RE_SN, sn):
-        raise Exception("{} Doesn't match student number regex".format(sn))
-    
-    print("\nStarting node at {}".format(sn))
-    genghis_dir = os.path.join("/home", sn[0].lower(), sn.lower(), "public_html", "genghis")
-    node_str.append("https://people.cs.uct.ac.za/~{}/genghis/".format(sn.upper()))
+    for sn in sys.argv[1:stop]:
+        RE_SN = re.compile(r"([BCDFGHJKLMNPQRSTVWXYZ]{3}\w{3}\d{3})")
+        if not re.match(RE_SN, sn):
+            print("{} Doesn't match student number regex".format(sn))
+            continue
+        
+        print("\nStarting node at {}".format(sn))
+        genghis_dir = os.path.join("/home", sn[0].lower(), sn.lower(), "public_html", "genghis")
+        node_str.append("https://people.cs.uct.ac.za/~{}/genghis/".format(sn.upper()))
 
-     
-    # Get rid of any old/unrelevant game variables that may be left over
-    reset_node(sn)
-    
-    # Run init.sh to update the permissions required
-    cmd = [os.path.join(genghis_dir, "init.sh")]
-    print(" ".join(cmd))
-    subprocess.run(cmd).returncode
- 
+        # If the node isn't KNXBOY001, copy over any updates that may have been made to the judge system and such
+        if sn.lower() != "knxboy001" and DEBUG:
+            cmd = ['rsync', '-r', '--delete', 
+                    "--exclude", "bots/", 
+                    "--exclude", "logs/*.json", 
+                    "--exclude", "node/ports.txt", 
+                    "--exclude", "vars/", 
+                    "--exclude", ".git", 
+                    '/home/k/knxboy001/public_html/genghis/', '{}'.format(genghis_dir)]
+            print(" ".join(cmd))
+            subprocess.run(cmd).returncode
+        
+        # Get rid of any old/unrelevant game variables that may be left over
+        reset_node(sn)
+        
+        if sn.lower() != "knxboy001" and DEBUG:
+            # Run init.sh to update the permissions required
+            cmd = [os.path.join(genghis_dir, "init.sh")]
+            print(" ".join(cmd))
+            subprocess.run(cmd).returncode
+      
 
-    # start up the judge system in the background, writing output to logs/judge.log
-    cmd = ["python3", os.path.join(genghis_dir, "node",  "judge.py")] 
-    print(" ".join(cmd))
-    if DEBUG:
-        subprocess.Popen(cmd)
-    else:
-        with open(os.path.join(genghis_dir, "logs", "judge.log"), "w+") as judge_log:
-            subprocess.Popen(cmd, stdout=judge_log)
+        # start up the judge system in the background, writing output to logs/judge.log
+        cmd = ["python3", os.path.join(genghis_dir, "node",  "judge.py")] 
+        print(" ".join(cmd))
+        if DEBUG and sn == "KNXBOY001":
+            subprocess.Popen(cmd)
+        else:
+            with open(os.path.join(genghis_dir, "logs", "judge.log"), "w+") as judge_log:
+                subprocess.Popen(cmd, stdout=judge_log)
 
     print("\n{} nodes started:\n\t{}".format(len(sys.argv[1:stop]), "\n\t".join(node_str)))
 
@@ -65,16 +86,16 @@ def reset_node(sn):
         "ports": ports_dir,
         "self": sn,
         "coins": {
-            sn.lower(): sn[3].lower()
+            sn.lower(): sn[0].lower()
         },
     }
 
 
-    # clear the gamestate file
+    # First clear the gamestate file
     with open(os.path.join(genghis_dir, "vars", "gamestate.json"), "w+") as gamestate_file:
         json.dump(gamestate, gamestate_file, indent=2)
     
-    # Clear any old bot data files from the logs
+    # Clear any old bot data files
     to_delete = glob.glob(os.path.join(genghis_dir, "logs", "*"))
     print("Deleting: {}".format(str(to_delete)))
     for f in to_delete:
