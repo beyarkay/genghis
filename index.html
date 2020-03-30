@@ -1,36 +1,686 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <link rel="stylesheet" href="www/styles.css">
-        <title id="title"></title>
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    </head>
-    <body>
-        <div id="wrapper">
-        
+<head>
+    <meta charset="utf-8">
+
+    <link href="https://unpkg.com/purecss@1.0.1/build/base-min.css" rel="stylesheet">
+    <link href="https://unpkg.com/purecss@1.0.1/build/grids-min.css" rel="stylesheet">
+    <link href="https://unpkg.com/purecss@1.0.1/build/grids-responsive-min.css" rel="stylesheet">
+    <link href="https://unpkg.com/purecss@1.0.1/build/tables-min.css" rel="stylesheet">
+    <!--    &lt;!&ndash; Compiled and minified CSS for Materialize &ndash;&gt;-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+
+    <!--    &lt;!&ndash; Compiled and minified JavaScript for Materialize&ndash;&gt;-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <!--Make sure we'll work with mobile devices-->
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+<!--    Get jQuery-->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    <title>______001 | Genghis Battle</title>
+    <link href="./www/styles.css" rel="stylesheet" type="text/css"/>
+
+
+</head>
+<body>
+<div class="pure-g">
+    <!--Header and Battleground-->
+    <div class="pure-u-1 pure-u-lg-18-24">
+        <div class="tab">
+            <h2 id="mainTitle">Bot Battle on <a href="https://people.cs.uct.ac.za/~KNXBOY001/genghis/">______001</a></h2>
+            <h6>
+                Using the Genghis Battle System by <a class="linkActive" href="https://github.com/beyarkay/">Boyd
+                Kane</a>,
+                bots built by CompSci students compete for resources and fight each other,
+                travelling to and from websites like this one.
+                Build your own <a class="linkActive" href="https://github.com/beyarkay/genghis">here</a>
+            </h6>
+            <h4>Battleground</h4>
+            <table id="battleground" class="shadow shadow-1 battleground">
+                <tbody>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">
+                        <a href="https://people.cs.uct.ac.za/~MSHSTU001/genghis/">1</a></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell"></td>
+                    <td class="battleCell">#</td>
+                </tr>
+                <tr>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                    <td class="battleCell">#</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-    
-    
-    <script>
-        let loc = window.location.pathname;
-        // loc is now "/~KNXBOY001/genghis/"
-        let sn = loc.split("/")[1].substring(1);
-        document.getElementById("title").innerHTML = "Genghis Battle on " + sn;
-        let interval = 250;
-        $.ajaxSetup ({
-            // Disable caching of AJAX responses
-                cache: false
-        });
-        function loadMap() {
-            // Every `interval` milliseconds, reload the page with the updated map.html
-            let genghis_dir = window.location.pathname;
-            $("div").load("https://people.cs.uct.ac.za" + genghis_dir + "www/map.html");
-            setTimeout(loadMap, interval);
-        }
-        setTimeout(loadMap, interval);
-    </script>
-    </body>
+    </div>
+    <!--Bots and Details-->
+    <div class="pure-u-1 pure-u-lg-6-24">
+        <div class="tab">
+            <h4>Bots</h4>
+            <div class="pure-g" id="divBots">
 
-    
+                <div class="pure-u-1-2 pure-u-lg-1-2 pure-u-md-1-4">
+                    <div class="shadow shadow-1">
+                        <b>______001's</b>
+                        <ul>
+                            <li>41 x aaaaaa001</li>
+                            <li>6 x bbbbbb001</li>
+                            <li>1 x cccccc001</li>
+                            <li>13 x knxboy__1</li>
+                        </ul>
+                    </div>
+                </div>
 
+
+                <div class="pure-u-1-2 pure-u-lg-1-2 pure-u-md-1-4">
+                    <div class="shadow shadow-1">
+                        <b>AAAAAA001</b>
+                        <!--                        <p>Coins</p>-->
+                        <ul>
+                            <li>41 x aaaaaa001</li>
+                            <li>6 x bbbbbb001</li>
+                            <li>1 x cccccc001</li>
+                            <li>13 x knxboy__1</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="pure-u-1-2 pure-u-lg-1-2 pure-u-md-1-4">
+                    <div class="shadow shadow-1">
+                        <b>BBBBBB001</b>
+                        <!--                        <p>Coins</p>-->
+                        <ul>
+                            <li>41 x aaaaaa001</li>
+                            <li>6 x bbbbbb001</li>
+                            <li>1 x cccccc001</li>
+                            <li>13 x knxboy__1</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="pure-u-1-2 pure-u-lg-1-2 pure-u-md-1-4">
+                    <div class="shadow shadow-1">
+                        <b>CCCCCC001</b>
+                        <!--                        <p>Coins</p>-->
+                        <ul>
+                            <li>41 x aaaaaa001</li>
+                            <li>6 x bbbbbb001</li>
+                            <li>1 x cccccc001</li>
+                            <li>13 x knxboy__1</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h4>Node Details</h4>
+            <div class="pure-g">
+                <div class="pure-u-1-2 pure-u-lg-1 pure-u-md-1-4">
+                    <div class="shadow shadow-1" id="statusCard">
+                        <b>Status:</b>
+                        <br> Battle In Progress<br>3m 55s left in this round
+                    </div>
+                </div>
+<!--                <div class="pure-u-1-2 pure-u-lg-1 pure-u-md-1-4">-->
+<!--                    <div class="shadow shadow-1">-->
+<!--                        <b>Bots:</b>-->
+<!--                        <ul>-->
+<!--                            <li>AAAAAA001 (A),</li>-->
+<!--                            <li>BBBBBB001 (B),</li>-->
+<!--                            <li>CCCCCC0001 (C),</li>-->
+<!--                            <li>KNXBOY__1 (K)</li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                </div>-->
+                <div class="pure-u-1-2 pure-u-lg-1 pure-u-md-1-4">
+                    <div class="shadow shadow-1" id="divPorts">
+                        <b>Ports:</b>
+                        <ul>
+                            <li class="port notWorking">1 goes to AAAAAA001</li>
+                            <li class="port">2 goes to BBBBBB001</li>
+                            <li class="port">3 goes to CCCCCC0001</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="pure-u-1-2 pure-u-lg-1 pure-u-md-1-4">
+                    <div class="shadow shadow-1">
+                        <b>Battles Today:</b>
+                        <ul id="schedule">
+                            <li class="battleTime strikeout">07h50 to 07h55</li>
+                            <li class="battleTime strikeout">08h50 to 08h55</li>
+                            <li class="battleTime strikeout">09h50 to 09h55</li>
+                            <li class="battleTime strikeout">10h50 to 10h55</li>
+                            <li class="battleTime ongoing">11h50 to 11h55</li>
+                            <li class="battleTime">12h50 to 12h55</li>
+                            <li class="battleTime">13h50 to 13h55</li>
+                            <li class="battleTime">14h50 to 14h55</li>
+                            <li class="battleTime">15h50 to 15h55</li>
+                            <li class="battleTime">16h50 to 16h55</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="./www/script.js"></script>
+</body>
 </html>
