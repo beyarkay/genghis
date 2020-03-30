@@ -1,0 +1,72 @@
+h1, h2, h3, h4, h5, h6, p, table, span {
+    text-align: center;
+}
+body {
+    color: black;
+}
+
+.shadow {
+    text-align: center;
+    margin: 0.5em;
+}
+
+.shadow-1 {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+a {
+    color: inherit;
+}
+.linkActive {
+    color: darkslategrey;
+}
+
+.battleground {
+    width: 100%;
+}
+
+.battleCell {
+    padding: 0;
+    border-style: solid;
+    border-color: lightgrey;
+    border-width: 1px;
+    color: #598f93;
+    text-align: center;
+    vertical-align: center;
+    white-space: nowrap;
+    width: 1vw;
+    height: 1vw;
+}
+
+
+.battleTime {
+}
+
+.current {
+    font-weight: bold;
+}
+
+.strikeout {
+    text-decoration: line-through;
+    color: grey;
+}
+
+.port {
+}
+.ongoing {
+    font-weight: bold;
+}
+
+.notWorking {
+    text-decoration: line-through;
+    color: darkred;
+}
+.tab {
+    margin: 1em;
+}
+
+#gamestateCard {
+    white-space: pre;
+    text-align: left;
+    font-family: monospace;
+}
