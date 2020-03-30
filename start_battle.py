@@ -46,7 +46,7 @@ def main():
         if sn.lower() != "knxboy001" and DEBUG:
             cmd = ['rsync', '-r', '--delete', 
                     "--exclude", "bots/", 
-                    "--exclude", "logs/*.json", 
+                    "--exclude", "logs/", 
                     "--exclude", "node/ports.txt", 
                     "--exclude", "vars/", 
                     "--exclude", ".git", 
@@ -59,7 +59,7 @@ def main():
         
         if sn.lower() != "knxboy001" and DEBUG:
             # Run init.sh to update the permissions required
-            cmd = [os.path.join(genghis_dir, "init.sh")]
+            cmd = [os.path.join(genghis_dir, "init.sh"), "KNXBOY001"]
             print(" ".join(cmd))
             subprocess.run(cmd).returncode
       
