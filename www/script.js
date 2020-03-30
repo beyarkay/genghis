@@ -69,7 +69,7 @@ $(document).ready(function () {
 
             // Add a subtitle for the coins
             const b = document.createElement("b");
-            b.innerHTML = "Coins: ";
+            b.innerHTML = "<br>Coins: ";
             divShadow.appendChild(b);
 
             // Build up the ul of all the bot's coins

@@ -53,6 +53,7 @@ def get_move(layout):
     enemy_icons = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     coin_icons = [i.lower() for i in enemy_icons]
     coins = {}
+    print(bot_data)
     enemy_icons.remove(bot_data['default_icon'])
 
     # Iterate through every item in the layout. Note that the rows and columns are switched, such that the first

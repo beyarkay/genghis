@@ -34,6 +34,7 @@ RE_SN = re.compile(r"([BCDFGHJKLMNPQRSTVWXYZ]{3}\w{3}\d{3})")
 node_dir = "/" + os.path.join(*os.path.abspath(__file__).split(os.sep)[:-1])
 genghis_dir = "/" + os.path.join(*os.path.abspath(__file__).split(os.sep)[:-2])
 
+# TODO add in some sort of 'commentary' to explain what's going on (bot moved here, attacked there, ported to there)
 def main():
     global SPAWN_LOCATIONS
     global PORT_LOCATIONS
@@ -122,8 +123,6 @@ def add_bot_dir(sn):
             # Give the first letter of the bot's surname/name preference when picking a symbol
             available_icons.remove(sn[0])
             available_icons.insert(0, sn[0])
-            available_icons.remove(sn[3])
-            available_icons.insert(0, sn[3])
             for bot in gamestate['bots'].values():
                 ic = bot['default_icon']
                 if ic:  # new bots are initialised with an empty string as their icon
@@ -171,20 +170,18 @@ def run():
             print("\n===============Round {}===============".format(count))
         else:
             print("No bots in gamestate, sleeping")
-            update_html()
             time.sleep(TICK_DURATION)
             continue
 
         for sn in gamestate['bots'].keys():
             directory = os.path.join(genghis_dir, "bots", sn)
             if not os.path.exists(directory):
+                raise Exception("This should never get here... 30 Mar 2020")
                 add_bot_dir(sn)
                 add_bot_to_layout(sn)
-
-            shutil.copy(os.path.join(genghis_dir, "vars", "layout.txt"), "{}/layout.txt".format(directory))
+            copy_over_bot_files(sn)
             time.sleep(TICK_DURATION/len(gamestate['bots'].keys()))
             step_bot(directory)
-            update_html()
 
         count += 1
         time_left = datetime.timedelta(minutes=5) - (datetime.datetime.now() - START_TIME)
@@ -197,8 +194,20 @@ def run():
     with open(os.path.join(node_dir, "layout_template.txt"), "r") as mapfile:
         layout = [line.strip() for line in mapfile.readlines()]
     layout = [list(i) for i in zip(*layout)]
-    update_html()
 
+def copy_over_bot_files(sn):
+    global genghis_dir
+
+    # Create a data dictionary for the bot, but don't give that bot access to it's enemy's information
+    data = get_gamestate()
+    del data['self']
+    data['coin_map'] = data.pop('coins')
+    data.update({k: v for k, v in data['bots'][sn].items()})
+
+    directory = os.path.join(genghis_dir, "bots", sn)
+    shutil.copy(os.path.join(genghis_dir, "vars", "layout.txt"), "{}/layout.txt".format(directory))
+    with open(os.path.join(directory, "data.json"), "w+") as bot_data:
+        json.dump(data, bot_data, indent=2)
 
 def step_bot(bot_dir):
     subprocess.run(["python3", os.path.join(bot_dir, "bot.py")])
@@ -272,7 +281,6 @@ def attack(bot_loc, direction, weapon):
     The flip side of the alphabet is immune, and get delt damage of 0. ie student numbers MMMMMM001 through to ZZZZZZ001 will receive no damage when attacked with a coin who's student number is AAAAAA001
 
     """
-    # TODO convert all coins to be lowercase 
     gamestate = get_gamestate()
     print("Gamestate before {} attacks with {}:\n{}".format(bot_loc, weapon, gamestate))
     defender_icon = get_cell(bot_loc, direction)
@@ -299,7 +307,7 @@ def attack(bot_loc, direction, weapon):
         damage = round(1 - (wpn_ord - dfn_ord)/26)
 
         # Make the defending bot drop the appropriate coinage
-        if defender['coins']: # random.choices raises IndexError if the population is empty
+        if sum(defender['coins'].values()): # random.choices raises IndexError if the population is empty
             dropped_coin = random.choices(
                 list(defender['coins'].keys()),
                 [int(v) for v in defender['coins'].values()],
@@ -333,28 +341,12 @@ def grab_coin(sn, icon):
     if 'coins' not in gamestate['bots'][sn].keys():
         gamestate['bots'][sn]['coins'] = {}
         
-    if gamestate['bots'][sn]['coins'][coin]:
+    if coin in gamestate['bots'][sn]['coins'].keys():
         gamestate['bots'][sn]['coins'][coin] += 1
     else:
         gamestate['bots'][sn]['coins'][coin] = 1
 
     dump_gamestate(gamestate)
-
-    # TODO refactor out a method to copy over the bot's information from gamestate to bots/.../data.json
-    # Now write the same data to the bot's data.json
-    with open(os.path.join(genghis_dir, "bots", sn, "data.json"), "r") as data_file:
-        data = json.load(data_file)
-    if 'coins' not in data.keys():
-        data['coins'] = {
-            sn: 1
-        }
-    elif coin in data['coins'].keys():
-        data['coins'][coin] += 1
-    else:
-        data['coins'][coin] = 1
-
-    with open(os.path.join(genghis_dir, "bots", sn, "data.json"), "w") as data_file:
-        json.dump(data, data_file, indent=2)
 
 def get_cell(bot_loc, cmd):
     layout = get_layout()
@@ -386,12 +378,8 @@ def add_coin(sn, n=1):
         available_coins = list("abcdefghijklmnopqrstuvwxyz")
         for coin_icon in gamestate['coins'].values():
             available_coins.remove(coin_icon)
-        if sn[3].lower() in available_coins:
-            gamestate['coins'][sn.lower()] = sn[3].lower()
-
-        elif sn[0].lower() in available_coins:
+        if sn[0].lower() in available_coins:
             gamestate['coins'][sn.lower()] = sn[0].lower()
-
         else:
             gamestate['coins'][sn.lower()] = available_coins[0]
 
@@ -474,80 +462,6 @@ def game_is_over():
     """
     global START_TIME
     return datetime.datetime.now() - START_TIME > datetime.timedelta(minutes=5)
-
-
-def update_html():
-    """Update map.html to represent the current state of the game
-
-    Using map_template.html as a template file, update map.html with some script 
-    variables/gamestate.json variables.
-    map.html is inserted into a div element in index.html by some JavaScript in the index.html file
-
-    """
-    pass
-#    with open(os.path.join(genghis_dir, "node", "map_template.html"), "r") as templatefile:
-#        html = "\n".join(templatefile.readlines())
-#    layout = get_layout()
-#    gamestate = get_gamestate()
-#
-#    map_port_fstring = "<a href=\"https://people.cs.uct.ac.za/~{0}/genghis/\" >{1}</a>"
-#    tbody = "\n<tbody>\n"
-#    for x, col in enumerate([list(i) for i in zip(*layout)]):
-#        tbody += "\t<tr>\n"
-#        for y, item in enumerate(col):
-#            tbody += "\t\t<td class=\"td_equal_relative\">\n\t\t\t"
-#            if item in gamestate['ports'].keys():
-#                tbody += map_port_fstring.format(gamestate['ports'][item], item)
-#            else:
-#                tbody += item
-#            tbody += "\n\t\t</td>\n"
-#
-#        tbody += "\t</tr>\n"
-#    tbody += "</tbody>"
-#
-#    host = str(os.path.abspath(__file__).split(os.sep)[3].upper())
-#    host_string = "<a href=\"https://people.cs.uct.ac.za/~" + host + "/genghis/\">" + host + "</a>"
-#
-#    sns = gamestate['bots'].keys()
-#
-#    format_string = "<strong><a href=\"https://people.cs.uct.ac.za/~{}/genghis/\" >{}</a></strong> ({})"
-#    bot_icons = [bot['default_icon'] for bot in gamestate['bots'].values()]
-#    botstrings = [format_string.format(sn, sn, icon) for sn, icon in zip(sns, bot_icons)]
-#    botstring = ", ".join(botstrings)
-#
-#    ports_fstring = "{0} -> <a href=\"https://people.cs.uct.ac.za/~{1}/genghis/\">{1}</a>"
-#    ports_strings = [ports_fstring.format(k, v) for (k, v) in gamestate['ports'].items()]
-#    ports_string = ",    ".join(ports_strings)
-#    
-#    if game_is_over():
-#        status = " (Time's up)"
-#        time_remaining = "No time remaining"
-#    else:
-#        status = " (battle in progress!)"
-#        time_left = datetime.timedelta(minutes=5) - (datetime.datetime.now() - START_TIME)
-#        time_remaining = "{} left".format(str(time_left - datetime.timedelta(microseconds=time_left.microseconds)))
-#
-#    coins_strings = []
-#    count = 0
-#    print("Gamestate while writing to html: {}".format(str(gamestate)))
-#    for sn, bot in gamestate['bots'].items():
-#        if 'coins' in bot.keys():
-#            coin_arr = []
-#            for coin, count in bot['coins'].items():
-#                coin_arr.append("{0} x {1}".format(count, coin.lower()))
-#            coins_strings.append("{} has: {}".format(sn,  ", ".join(coin_arr)))
-#    coins_str = "<br>".join(coins_strings)
-#
-#    html = html.replace("{{tbody}}", tbody)
-#    html = html.replace("{{host}}", host_string)
-#    html = html.replace("{{bots}}", botstring)
-#    html = html.replace("{{status}}", status)
-#    html = html.replace("{{ports}}", ports_string)
-#    html = html.replace("{{time_remaining}}", time_remaining)
-#    html = html.replace("{{coins}}", coins_str)
-#
-#    with open(os.path.join(genghis_dir, "www", "map.html"), "w+") as mapfile:
-#        mapfile.write(html)
 
 
 def get_gamestate():

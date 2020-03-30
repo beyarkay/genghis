@@ -2,6 +2,7 @@
 OLD_WD=`pwd`
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd $DIR
+touch node/ports.txt
 chmod 700 init.sh start_battle.py README.md node/ports.txt
 chmod 744 -fR index.html node
 chmod 755 .. node node/bouncer.py

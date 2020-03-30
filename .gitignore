@@ -1,1 +1,5 @@
 
+bots/*
+logs/*
+vars/*
+node/ports.txt
