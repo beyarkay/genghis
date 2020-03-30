@@ -85,7 +85,7 @@ def reset_node(sn):
         "ports": ports_dir,
         "self": sn,
         "coins": {
-            sn: sn[3].lower()
+            sn.lower(): sn[3].lower()
         },
     }
 
