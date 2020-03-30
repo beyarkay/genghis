@@ -79,4 +79,4 @@ cd ~/public_html/genghis && echo "<YOUR STUDENT NUMBER HERE>" >> node/ports.txt
 * Migrate all the host's bot files to a separate directory
 * Add in a difference checking between the bots
 * Add an easy-setup system
-* Improve the website
+* Add a walkthrough for how everything connects and making your first bot

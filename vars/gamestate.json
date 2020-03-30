@@ -4,15 +4,7 @@
       "student_number": "KNXBOY001",
       "default_icon": "B",
       "coins": {
-        "knxboy001": 0,
-        "mshstu001": 1
-      }
-    },
-    "MSHSTU001": {
-      "student_number": "MSHSTU001",
-      "default_icon": "S",
-      "coins": {
-        "mshstu001": 0
+        "knxboy001": 1
       }
     }
   },
