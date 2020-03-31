@@ -6,7 +6,7 @@ This is the bare-bones, default bot for the genghis battle system. (https://gith
 
 This bot will try to get every coin on the battleground, and then it'll go to a port in order to get to a different node
 """
-
+import random
 import json
 import os
 bot_data = {}
