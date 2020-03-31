@@ -138,14 +138,21 @@ $(document).ready(function () {
             '0', '1', '2', '3', '4',
             '5', '6', '7', '8', '9'
         ];
+        const valid_coins = [
+            'a', 'b', 'c', 'd', 'e', 
+            'f', 'g', 'h', 'i', 'j', 
+            'k', 'l', 'm', 'n', 'o', 
+            'p', 'q', 'r', 's', 't', 
+            'u', 'v', 'w', 'x', 'y', 
+            'z'
+        ];
 
         for (let i = 0; i < array.length; i++) {
             const row = document.createElement('tr');
             for (let j = 0; j < array[i].length; j++) {
                 let cell = document.createElement('td');
                 cell.setAttribute("class", "battleCell");
-                //TODO Hyperlink the port to the node that it belongs to
-
+                
                 if (valid_ports.includes(array[i].charAt(j))) {
                     const a = document.createElement("a");
                     const sn = gamestate['ports'][array[i].charAt(j)];
@@ -154,6 +161,8 @@ $(document).ready(function () {
                     // botTitle.appendChild(a);
 
                     cell.appendChild(a);
+                } else if (valid_coins.includes(array[i].charAt(j))) {
+                    cell.innerHTML = `<img src="./www/coin_generic.gif"></img>`;
                 } else {
                     cell.textContent = array[i].charAt(j);
                 }
