@@ -1,20 +1,16 @@
 """
-bot.py
+basic_bot.py
 author: Boyd Kane: https://github.com/beyarkay
 
 This is the bare-bones, default bot for the genghis battle system. (https://github.com/beyarkay/genghis)
-This bot expects to be run in its own directory with: 
-    * gamestate.json
-    * layout.txt
 
-It will not work if not run under those conditions
-
-This bot will try to get every coin on the map, and then it'll go to a port to move onto the next map
+This bot will try to get every coin on the battleground, and then it'll go to a port in order to get to a different node
 """
 
 import json
 import os
 bot_data = {}
+
 # Get the student number of the current bot, based on the file path
 sn = os.path.abspath(__file__).split(os.sep)[-2].upper()
 
@@ -27,19 +23,31 @@ def main():
     """
     global bot_data
     global sn
+
     # layout.txt describes the map of the game, where everything is.
     with open(os.path.join(bot_dir, "layout.txt"), "r") as mapfile:
         layout = mapfile.readlines()
+    
     # data.json is the bot's gamestate file, containing meta information about the game
     with open(os.path.join(bot_dir, "data.json"), "r") as statsfile:
         bot_data = json.load(statsfile)
-
+    
+    # Now that the setup is complete, calculate the bot's move:
     get_move(layout)
 
 def get_move(layout):
     """Calculate the bot's move, and write it to ./move.json
-
+    The bot's move is a dictionary, with the following keys permitted:
+        * 'action': one of ('walk', 'attack')
+            * 'walk': simply walk 1 block in the direction specified by 'direction'
+            * 'attack': perform an attack, in the direction specified by 'direction', using the coin specified by 'weapon' as the thing you're attacking with
+        * 'direction': one of ('l', 'r', 'u', 'd')
+            * Simply the direction (left, right, up, or down) in which to perform the action
+        * 'weapon': must be a valid, lowercase student number
+            * Only used when 'action' is 'attack'
+    
     """
+
     move = {
         "action": '',
         "direction": '',
@@ -53,11 +61,9 @@ def get_move(layout):
     enemy_icons = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     coin_icons = [i.lower() for i in enemy_icons]
     coins = {}
-    print(bot_data)
     enemy_icons.remove(bot_data['default_icon'])
 
-    # Iterate through every item in the layout. Note that the rows and columns are switched, such that the first
-    # variable is the x-coordinate going left/right, and the second is the y-coordinate
+    # Iterate through every item in the layout and populate the variables initialised above
     for c, col in enumerate(layout):
         for r, item in enumerate(col):
             if item == bot_data['default_icon']:
@@ -78,39 +84,14 @@ def get_move(layout):
             elif item in enemy_icons:
                 enemies.append((r, c))
     
-    weapon_keys = [k for k, v in bot_data['coins'].items() if v > 0]
-    move = {}
-    if weapon_keys: #if we have a coin to fight with
-        enemy_dists = [(abs(e[0] - bot_loc[0]) + abs(e[1] - bot_loc[1])) for e in enemies]
-        if any([dist==1 for dist in enemy_dists]): # and there's an enemy adjacent to us 
-            move['action'] = 'attack'
-            move['weapon'] = weapon_keys[0]
 
-            enemy = get_closest(enemies, bot_loc)
-            if enemy[0] < bot_loc[0]:
-                move['direction'] = 'l'
-            elif enemy[0] > bot_loc[0]:
-                move['direction'] = 'r'
-            elif enemy[1] < bot_loc[1]:
-                move['direction'] = 'u'
-            elif enemy[1] > bot_loc[1]:
-                move['direction'] = 'd'
-            else:
-                raise Exception("Bot {} can't find the enemy {}".format(bot_loc, enemy))
-        else:
-            if enemies:
-               closest = get_closest(enemies, bot_loc)
-            else:
-                closest = get_closest(ports, bot_loc)
-            
-            move = walk_to(closest, bot_loc)
-    else:
-        if coins.keys(): # If there are coins to be had, go get them 
-            closest = get_closest(list(coins.values())[0], bot_loc)
-        else: # Otherwise, go to a port and move on to the next node 
-            closest = get_closest(ports, bot_loc)
+    if coins.keys(): # If there are coins to be had, go get them 
+        coin_to_get = random.choice(list(coins.keys()))
+        closest = get_closest(coins[coin_to_get], bot_loc)
+    else: # Otherwise, go to a port and move on to the next node 
+        closest = get_closest(ports, bot_loc)
 
-        move = walk_to(closest, bot_loc)
+    move = walk_to(closest, bot_loc)
     print("bot {} is moving: {}".format(bot_loc, str(move)))
     with open(os.path.join(bot_dir, "move.json"), "w+") as move_file:
         json.dump(move, move_file)
