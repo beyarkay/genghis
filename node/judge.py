@@ -38,6 +38,7 @@ genghis_dir = "/" + os.path.join(*os.path.abspath(__file__).split(os.sep)[:-2])
 def main():
     global SPAWN_LOCATIONS
     global PORT_LOCATIONS
+    global START_TIME
     with open(os.path.join(node_dir, "layout_template.txt"), "r") as mapfile:
         layout = [line.strip() for line in mapfile.readlines()]
     layout = [list(i) for i in zip(*layout)]
@@ -64,6 +65,8 @@ def main():
             layout[x_pos][y_pos] = ICON_AIR
     if ports:
         raise Exception("{} is not enough PORT icons in layout template; {} ports left undisplayed".format(len(PORT_LOCATIONS), len(ports)))
+
+    gamestate['start_time'] = START_TIME.isoformat()
     dump_gamestate(gamestate)
 
     for x_pos, y_pos in SPAWN_LOCATIONS:
@@ -165,7 +168,6 @@ def run():
     while True:
         add_any_new_bots()
         gamestate = get_gamestate()
-        print(gamestate)
         if gamestate['bots'].keys():
             print("\n===============Round {}===============".format(count))
         else:
@@ -181,6 +183,13 @@ def run():
                 add_bot_to_layout(sn)
             copy_over_bot_files(sn)
             time.sleep(TICK_DURATION/len(gamestate['bots'].keys()))
+            
+            gamestate = get_gamestate()
+            time_left = datetime.timedelta(minutes=5) - (datetime.datetime.now() - START_TIME)
+            time_s = time_left.seconds % 60
+            time_m = (time_left.seconds - time_s) // 60
+            gamestate['time_left'] = "{}:{}".format(time_m, time_s)
+            dump_gamestate(gamestate)
             step_bot(directory)
 
         count += 1
@@ -194,6 +203,12 @@ def run():
     with open(os.path.join(node_dir, "layout_template.txt"), "r") as mapfile:
         layout = [line.strip() for line in mapfile.readlines()]
     layout = [list(i) for i in zip(*layout)]
+    dump_layout(layout)
+
+    gamestate = get_gamestate()
+    gamestate['time_left'] = "0:0"
+    dump_gamestate(gamestate)
+    
 
 def copy_over_bot_files(sn):
     global genghis_dir

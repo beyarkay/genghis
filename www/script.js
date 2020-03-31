@@ -1,4 +1,3 @@
-// jQuery
 $(document).ready(function () {
 // Add in the node details
 
@@ -41,6 +40,20 @@ $(document).ready(function () {
 
     // Get the gamestate.json from the server:
     function loadWithGamestate(gamestate) {
+
+        // Update the `Status` card
+        let statusCard = document.getElementById('statusCard');
+        statusCard.innerHTML = `<b>Status:</b><br>`;
+        if (d.getMinutes() >= 50 && d.getMinutes() < 55 && d.getHours() <= 16 && d.getHours() >= 7) {
+            statusCard.innerHTML +=
+                `Battle In Progress<br>${55 - d.getMinutes()}m${d.getSeconds()}s left in this round`
+        } else if (gamestate['time_left'].split(":")[0] != "0" && gamestate['time_left'].split(":")[1] != "0" ){
+            statusCard.innerHTML +=
+                `Battle In Progress<br>${gamestate['time_left'].split(":")[0]}m${gamestate['time_left'].split(":")[1]}s left in this round`
+        } else {
+            statusCard.innerHTML += `No (official) battle right now`
+        }
+
         // Update the items with Student Number
         let title = document.getElementById("mainTitle");
         const sn = gamestate['self'];
@@ -125,27 +138,19 @@ $(document).ready(function () {
         // Now update the gamestate card:
         let gamestateCard = document.getElementById('gamestateCard');
         gamestateCard.innerHTML = `<br>${JSON.stringify(gamestate, null, 2)}`;
-
-
     }
 
     function loadWithLayout(layout_string, gamestate) {
         let battleground = document.getElementById("battleground");
         battleground.innerHTML = "";
-        console.log(layout_string);
         let array = layout_string.split(/\r?\n/);
-        const valid_ports = [
-            '0', '1', '2', '3', '4',
-            '5', '6', '7', '8', '9'
-        ];
-        const valid_coins = [
-            'a', 'b', 'c', 'd', 'e', 
-            'f', 'g', 'h', 'i', 'j', 
-            'k', 'l', 'm', 'n', 'o', 
-            'p', 'q', 'r', 's', 't', 
-            'u', 'v', 'w', 'x', 'y', 
-            'z'
-        ];
+
+        let valid_bots = [];
+        for (k in gamestate['bots']) {
+            valid_bots.push(gamestate['bots'][k]['default_icon']);
+        }
+        let valid_coins = Object.values(gamestate['coins']);
+        let valid_ports = Object.keys(gamestate['ports']);
 
         for (let i = 0; i < array.length; i++) {
             const row = document.createElement('tr');
@@ -153,16 +158,55 @@ $(document).ready(function () {
                 let cell = document.createElement('td');
                 cell.setAttribute("class", "battleCell");
                 
-                if (valid_ports.includes(array[i].charAt(j))) {
+                // Check if the item is a bot
+                if (valid_bots.includes(array[i].charAt(j))) {
+                    const a = document.createElement("a");
+                    let sn = "";
+                    for (k in gamestate['bots']) {
+                        if (gamestate['bots'][k]['default_icon'] === array[i].charAt(j)){
+                            sn = k
+                            break;
+                        }
+                    }
+                    a.setAttribute('href', `https://people.cs.uct.ac.za/~${sn}/genghis/`);
+                    a.innerHTML = array[i].charAt(j);
+
+                    let charCode = sn.charCodeAt(0) - "A".charCodeAt(0);
+                    let charDegree = Math.floor((charCode / 26) * 360)
+                    cell.style.backgroundColor = `hsl(${charDegree}, 100%, 70%)`
+                    cell.appendChild(a);
+                    
+                // Check if the item is a coin 
+                } else if (valid_coins.includes(array[i].charAt(j))) {
+                    const a = document.createElement("a");
+                    let sn = "";
+                    for (k in gamestate['coins']) {
+                        if (gamestate['coins'][k] === array[i].charAt(j)){
+                            sn = k
+                            break;
+                        }
+                    }
+                    cell.innerHTML = array[i].charAt(j);
+                    let charCode = sn.charCodeAt(0) - "a".charCodeAt(0);
+                    let charDegree = Math.floor((charCode / 26) * 360);
+                    cell.style.backgroundColor = `hsl(${charDegree}, 100%, 90%)`;
+                    cell.appendChild(a);
+
+                // Check if the item is a port
+                } else if (valid_ports.includes(array[i].charAt(j))) {
                     const a = document.createElement("a");
                     const sn = gamestate['ports'][array[i].charAt(j)];
                     a.setAttribute('href', `https://people.cs.uct.ac.za/~${sn}/genghis/`);
                     a.innerHTML = array[i].charAt(j);
-                    // botTitle.appendChild(a);
-
+                    let charCode = sn.charCodeAt(0) - "A".charCodeAt(0);
+                    let charDegree = Math.floor((charCode / 26) * 360)
+                    cell.style.backgroundColor = `hsl(${charDegree}, 100%, 95%)`;
                     cell.appendChild(a);
-        //        } else if (valid_coins.includes(array[i].charAt(j))) {
-          //          cell.innerHTML = `<img src="./www/coin_generic.gif"></img>`;
+
+                // Check if the item is a wall
+                } else if (array[i].charAt(j) === "#") {
+                    cell.innerHTML = array[i].charAt(j);
+                    cell.style.backgroundColor = "#CCCCCC";
                 } else {
                     cell.textContent = array[i].charAt(j);
                 }
