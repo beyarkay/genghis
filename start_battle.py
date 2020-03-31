@@ -28,7 +28,7 @@ def main():
     stop = len(sys.argv)
 
     DEBUG = "t" in sys.argv[-1]
-    FORCE_COPY = "d" in sys.argv[-1]:
+    FORCE_COPY = "d" in sys.argv[-1]
 
     if sys.argv[-1].islower():
         stop -= 1
