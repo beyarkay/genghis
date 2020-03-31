@@ -28,7 +28,7 @@ def main():
     if sys.argv[-1] == "t":
         DEBUG = True
         stop -= 1
-    for sn in sys.argv[1:stop]:
+    for index, sn in enumerate(sys.argv[1:stop]):
         RE_SN = re.compile(r"([BCDFGHJKLMNPQRSTVWXYZ]{3}\w{3}\d{3})")
         if not re.match(RE_SN, sn):
             if DEBUG:
@@ -57,9 +57,11 @@ def main():
         # Get rid of any old/unrelevant game variables that may be left over
         reset_node(sn)
         
-        if sn.lower() != "knxboy001" and DEBUG:
+        if DEBUG:
             # Run init.sh to update the permissions required
-            cmd = [os.path.join(genghis_dir, "init.sh"), "KNXBOY001"]
+            node_index = (index + 1) % (len(sys.argv[1:stop]))
+            node_for_ports = sys.argv[1:stop][node_index]
+            cmd = [os.path.join(genghis_dir, "init.sh"), node_for_ports]
             print(" ".join(cmd))
             subprocess.run(cmd).returncode
       
