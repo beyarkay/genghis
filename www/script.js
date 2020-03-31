@@ -161,8 +161,8 @@ $(document).ready(function () {
                     // botTitle.appendChild(a);
 
                     cell.appendChild(a);
-                } else if (valid_coins.includes(array[i].charAt(j))) {
-                    cell.innerHTML = `<img src="./www/coin_generic.gif"></img>`;
+        //        } else if (valid_coins.includes(array[i].charAt(j))) {
+          //          cell.innerHTML = `<img src="./www/coin_generic.gif"></img>`;
                 } else {
                     cell.textContent = array[i].charAt(j);
                 }

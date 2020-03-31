@@ -12,6 +12,7 @@ from shlex import split
 
 global genghis_dir
 DEBUG = False
+FORCE_COPY = False
 def main():
     """Start a battle on the nodes belonging to the student numbers given as cmdline arguments
 
@@ -22,12 +23,16 @@ def main():
     
     """
     global DEBUG
+    global FORCE_COPY
     node_str = []
     stop = len(sys.argv)
 
-    if sys.argv[-1] == "t":
-        DEBUG = True
+    DEBUG = "t" in sys.argv[-1]
+    FORCE_COPY = "d" in sys.argv[-1]:
+
+    if sys.argv[-1].islower():
         stop -= 1
+
     for index, sn in enumerate(sys.argv[1:stop]):
         RE_SN = re.compile(r"([BCDFGHJKLMNPQRSTVWXYZ]{3}\w{3}\d{3})")
         if not re.match(RE_SN, sn):
@@ -43,7 +48,7 @@ def main():
         print("\nStarting battle on {}...".format(node_str[-1]))
 
         # If the node isn't KNXBOY001, copy over any updates that may have been made to the judge system and such
-        if sn.lower() != "knxboy001" and DEBUG:
+        if sn.lower() != "knxboy001" and FORCE_COPY:
             cmd = ['rsync', '-r', '--delete', 
                     "--exclude", "bots/", 
                     "--exclude", "logs/", 

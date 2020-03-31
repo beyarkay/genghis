@@ -43,6 +43,7 @@ of the node where it is currently fighting
 ssh <Student number>@nightmare.cs.uct.ac.za
 <Enter your password>
 mkdir ~/public_html
+chmod 755 ~/public_html 
 ```
 2. Clone this repo into `public_html/`
 ```
@@ -50,16 +51,25 @@ cd ~/public_html
 git clone https://github.com/beyarkay/genghis.git
 ```
 
-3. `init.sh` will give the files in `genghis/` the correct permissions, and add a job to your crontab. You need to pass
+3. `init.sh` will give the files in `genghis/` the correct permissions, and add a job to your crontab. You need to pass in a the student number of another node, in order to connect yourself to the network. In this case use KNXBOY001:
 ```
+cd genghis
 ./init.sh KNXBOY001
 ```
 4. Now, you need to get someone else who's already setup to add you to their `node/ports.txt`. Have them run this command:
 ```
 cd ~/public_html/genghis && echo "<YOUR STUDENT NUMBER HERE>" >> node/ports.txt
 ```
+5. In order to get started, you need a `bot.py` script thats stored in the `node/` directory. For now copy the default bot:
+```
+cp node/basic_bot.py node/bot.py
+```
 
+And then start the battle in debug mode:
 
+```
+./start_battle.py <YOUR STUDENT NUMBER> t
+```
 
 ## A more in depth setup
 (work in progress)
@@ -69,13 +79,7 @@ cd ~/public_html/genghis && echo "<YOUR STUDENT NUMBER HERE>" >> node/ports.txt
 (work in progress)
 
 
-
 ## TODO
-* Setup AJAX properly to only load map.html when changes have happened
-* Migrate judge.update_html() to javascript
-* Flesh out the combat system
-* Automatically start the battleserver every hour through crontab, and automate this in the init.sh
-* Migrate all the host's bot files to a separate directory
 * Add in a difference checking between the bots
 * Add an easy-setup system
 * Add a walkthrough for how everything connects and making your first bot
