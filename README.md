@@ -37,7 +37,6 @@ of the node where it is currently fighting
 
 
 ## Quick Setup
-(Work in progress)
 
 1. Log into nightmare, and create a `public_html` directory
 ```
@@ -51,9 +50,9 @@ cd ~/public_html
 git clone https://github.com/beyarkay/genghis.git
 ```
 
-3. `init.sh` will give the files in `genghis/` the correct permissions, and add a job to your crontab:
+3. `init.sh` will give the files in `genghis/` the correct permissions, and add a job to your crontab. You need to pass
 ```
-./init.sh
+./init.sh KNXBOY001
 ```
 4. Now, you need to get someone else who's already setup to add you to their `node/ports.txt`. Have them run this command:
 ```
