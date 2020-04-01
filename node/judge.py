@@ -67,10 +67,8 @@ def main():
             layout[x_pos][y_pos] = ICON_AIR
     if ports:
         raise Exception("{} is not enough PORT icons in layout template; {} ports left undisplayed".format(len(PORT_LOCATIONS), len(ports)))
-V
     gamestate['start_time'] = START_TIME.isoformat()
     dump_gamestate(gamestate)
-V
     for x_pos, y_pos in SPAWN_LOCATIONS:
         layout[x_pos][y_pos] = ICON_AIR
     dump_layout(layout)
@@ -158,12 +156,7 @@ def add_bot_to_layout(sn):
             dump_layout(layout)
             
             # Notify the commentary that a bot has been added
-            comment = "{} joined as {}".format(sn, bot_icon)
-            now = datetime.datetime.now().strftime("%H:%M:%S")
-            if 'commentary' not in gamestate.keys():
-                gamestate['commentary'] = []   
-            gamestate['commentary'].insert(0, "{} - {}".format(now, comment))
-            dump_gamestate(gamestate)
+            add_comment("🛬{} joined as {}".format(sn, bot_icon))
             break
         inf_loop_count += 1
         if inf_loop_count > 200:
@@ -356,27 +349,39 @@ def attack(bot_loc, direction, weapon):
                     attacker['coins'][dropped_coin] += 1
                 else:
                     attacker['coins'][dropped_coin] = 1
-                comment = "{} attacked {} with {} and stole 1 x {}".format(attacker['student_number'], defender['student_number'], weapon, dropped_coin)
+                
+                comment = "{} 🔪 {} with 💰{} and stole 💰{}".format(
+                    attacker['student_number'], 
+                    defender['student_number'], 
+                    weapon, 
+                    dropped_coin
+                )
             else:
-                comment = "{} attacked {} with {} and destroyed 1 x {}".format(attacker['student_number'], defender['student_number'], weapon, dropped_coin)
+                comment = "{} 🔪 {} with 💰{} and destroyed 💰{}".format(
+                    attacker['student_number'], 
+                    defender['student_number'], 
+                    weapon, 
+                    dropped_coin
+                )
         else:
-            comment = "{0} attacked {1} with {2}, but {1} has no coins".format(attacker['student_number'], defender['student_number'], weapon)
+            comment = "{0} 🔪 {1} with 💰{2}".format(
+                attacker['student_number'], 
+                defender['student_number'], 
+                weapon
+            )
         # Remove the weapon from the attacking bot
         attacker['coins'][weapon] -= 1;
     else:
-        comment = "{} tried to attack {} with a coin it doesn't have ({})".format(attacker['student_number'], defender['student_number'], weapon)
-        print("{} does not have the weapon {} that it's trying to attack with".format(attacker, weapon))
-
-    now = datetime.datetime.now().strftime("%H:%M:%S")
-    if 'commentary' not in gamestate.keys():
-        gamestate['commentary'] = []   
-    gamestate['commentary'].insert(0, "{} - {}".format(now, comment))
-    dump_gamestate(gamestate)
+        comment = "{} tried to 🔪 {} with {}".format(
+            attacker['student_number'], 
+            defender['student_number'], 
+            weapon
+        )
+    add_comment(comment)
 
 def grab_coin(sn, icon):
     gamestate = get_gamestate()
     
-     
     # Figure out what the coin associated with the given coin_icon is
     for coin_sn, coin_icon in gamestate['coins'].items():
         if icon == coin_icon:
@@ -390,13 +395,7 @@ def grab_coin(sn, icon):
     else:
         gamestate['bots'][sn]['coins'][coin] = 1
     
-    
-    now = datetime.datetime.now().strftime("%H:%M:%S")
-    comment = "{} grabbed a coin ({})".format(sn, coin)
-    if 'commentary' not in gamestate.keys():
-        gamestate['commentary'] = []   
-    gamestate['commentary'].insert(0, "{} - {}".format(now, comment))
-
+    add_comment("{} grabbed 💰{}".format(sn, coin)) 
     dump_gamestate(gamestate)
 
 def get_cell(bot_loc, cmd):
@@ -492,12 +491,12 @@ def port_bot(bot_loc, bot_data, port):
 
     # If the port was successful, permenantly delete all the temporary files
     if r.ok:
-        comment = "{} ported to node {}".format(bot_data['student_number'], new_node)
+        comment = "{} 🛫 to node {}".format(bot_data['student_number'], new_node)
         print("Ported {} from {} to {} (bot_data={})".format(bot_data['student_number'], bot_loc, new_node, bot_data))
         shutil.rmtree(os.path.join(genghis_dir, "bots", "." + bot_data['student_number'].upper()))
     else:
         # else, move all the temporary files back to where they were and raise an error
-        comment = "{} failed to port through {} to {}".format(bot_data['student_number'], port, new_node)
+        comment = "❌ {} failed to port through {} to {}".format(bot_data['student_number'], port, new_node)
         shutil.move(
             os.path.join(genghis_dir, "bots", "." + bot_data['student_number'].upper()),
             os.path.join(genghis_dir, "bots", bot_data['student_number'].upper())
@@ -506,10 +505,14 @@ def port_bot(bot_loc, bot_data, port):
         gamestate['bots'][bot_data['student_number']] = tmp_bot
         dump_layout(layout)
 
-    now = datetime.datetime.now().strftime("%H:%M:%S")
+    add_comment(comment)
+
+def add_comment(comment):
+    gamestate = get_gamestate()
+    now = datetime.datetime.now().strftime("%Hh%Mm%Ss")
     if 'commentary' not in gamestate.keys():
-        gamestate['commentary'] = []   
-    gamestate['commentary'].insert(0, "{} - {}".format(now, comment))
+        gamestate['commentary'] = []
+    gamestate['commentary'].insert(0, "<b>{}<b> {}".format(now, comment))
     dump_gamestate(gamestate)
 
 
