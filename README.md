@@ -27,6 +27,7 @@ git clone https://github.com/beyarkay/genghis.git
 
 3. In order to get started, you need a `bot.py` script thats stored in the `node/` directory. For now copy the default bot:
 ```
+cd genghis
 cp node/basic_bot.py node/bot.py
 ```
 
