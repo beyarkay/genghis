@@ -17,7 +17,12 @@ chmod 755 -R www vars bots
 chmod 777 -R logs
 IFS='/' read -r -a array <<< $DIR
 pwd=`pwd`
-(crontab -l 2>/dev/null; echo "45 7-16 * * 1-5 cd $pwd && git reset --hard && git pull -q origin master") | sort - | uniq - | crontab -
+
+if [ "$pwd" = "/home/k/knxboy001/public_html/genghis" ]; then
+    echo "User is an author of Genghis, not forcing a git reset"
+else
+    (crontab -l 2>/dev/null; echo "45 7-16 * * 1-5 cd $pwd && git reset --hard origin/master && git pull origin master") | sort - | uniq - | crontab -
+fi
 (crontab -l ; echo "50 7-16 * * 1-5 /usr/bin/python3 $pwd/start_battle.py ${array[3]^^}") | sort - | uniq - | crontab -
 cd $OLD_WD
 
