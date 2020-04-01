@@ -512,7 +512,7 @@ def add_comment(comment):
     now = datetime.datetime.now().strftime("%Hh%Mm%Ss")
     if 'commentary' not in gamestate.keys():
         gamestate['commentary'] = []
-    gamestate['commentary'].insert(0, "<b>{}<b> {}".format(now, comment))
+    gamestate['commentary'].insert(0, "<b>{}</b> {}".format(now, comment))
     dump_gamestate(gamestate)
 
 
