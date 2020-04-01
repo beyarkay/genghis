@@ -17,6 +17,7 @@ chmod 755 -R www vars bots
 chmod 777 -R logs
 IFS='/' read -r -a array <<< $DIR
 pwd=`pwd`
-crontab -l | head -n -1 | { cat; echo "50 7-16 * * 1-5 /usr/bin/python3 $pwd/start_battle.py ${array[3]^^}"; } | crontab -
+(crontab -l 2>/dev/null; echo "45 7-16 * * 1-5 cd $pwd && git reset --hard && git pull -q origin master") | sort - | uniq - | crontab -
+(crontab -l ; echo "50 7-16 * * 1-5 /usr/bin/python3 $pwd/start_battle.py ${array[3]^^}") | sort - | uniq - | crontab -
 cd $OLD_WD
 
