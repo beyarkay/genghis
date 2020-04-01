@@ -33,7 +33,6 @@ cp node/basic_bot.py node/bot.py
 
 4. Run `init.sh`:
 ```
-cd genghis
 ./init.sh KNXBOY001
 ```
 
