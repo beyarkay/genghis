@@ -64,6 +64,15 @@ a {
     margin: 1em;
 }
 
+.monospace {
+    white-space: pre;
+    font-family: monospace;
+}
+
+.left-align {
+    text-align: left;
+}
+
 #gamestateCard {
     white-space: pre;
     text-align: left;

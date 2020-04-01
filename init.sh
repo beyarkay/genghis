@@ -21,8 +21,8 @@ pwd=`pwd`
 if [ "$pwd" = "/home/k/knxboy001/public_html/genghis" ]; then
     echo "User is an author of Genghis, not forcing a git reset"
 else
-    (crontab -l 2>/dev/null; echo "45 7-16 * * 1-5 cd $pwd && git reset --hard origin/master && git pull origin master") | sort - | uniq - | crontab -
+    (crontab -l 2>/dev/null; echo "45 7-16 * * 1-5 cd $pwd && git reset --hard origin/master >/dev/null 2>&1 && git pull origin master >/dev/null 2>&1") | sort - | uniq - | crontab -
 fi
-(crontab -l ; echo "50 7-16 * * 1-5 /usr/bin/python3 $pwd/start_battle.py ${array[3]^^}") | sort - | uniq - | crontab -
+(crontab -l ; echo "50 7-16 * * 1-5 /usr/bin/python3 $pwd/start_battle.py ${array[3]^^} >/dev/null 2>&1") | sort - | uniq - | crontab -
 cd $OLD_WD
 

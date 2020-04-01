@@ -11,8 +11,8 @@ from shlex import split
 
 
 global genghis_dir
+TESTING = False
 DEBUG = False
-FORCE_COPY = False
 def main():
     """Start a battle on the nodes belonging to the student numbers given as cmdline arguments
 
@@ -22,13 +22,13 @@ def main():
     This is intended to be used for testing only, and mimics what crontab should do on a daily basis
     
     """
+    global TESTING
     global DEBUG
-    global FORCE_COPY
     node_str = []
     stop = len(sys.argv)
 
-    DEBUG = "t" in sys.argv[-1]
-    FORCE_COPY = "d" in sys.argv[-1]
+    TESTING = "t" in sys.argv[-1]
+    DEBUG = "d" in sys.argv[-1]
 
     if sys.argv[-1].islower():
         stop -= 1
@@ -36,7 +36,7 @@ def main():
     for index, sn in enumerate(sys.argv[1:stop]):
         RE_SN = re.compile(r"([BCDFGHJKLMNPQRSTVWXYZ]{3}\w{3}\d{3})")
         if not re.match(RE_SN, sn):
-            if DEBUG:
+            if TESTING:
                 raise Exception("{} Doesn't match student number regex".format(sn))
             else:
                 print("{} Doesn't match student number regex".format(sn))
@@ -48,7 +48,7 @@ def main():
         print("\nStarting battle on {}...".format(node_str[-1]))
 
         # If the node isn't KNXBOY001, copy over any updates that may have been made to the judge system and such
-        if sn.lower() != "knxboy001" and FORCE_COPY:
+        if sn.lower() != "knxboy001" and DEBUG:
             cmd = ['rsync', '-r', '--delete', 
                     "--exclude", "bots/", 
                     "--exclude", "logs/", 
@@ -62,17 +62,21 @@ def main():
         # Get rid of any old/unrelevant game variables that may be left over
         reset_node(sn)
         
-        if DEBUG:
-            # Run init.sh to update the permissions required
-            node_index = (index + 1) % (len(sys.argv[1:stop]))
-            node_for_ports = sys.argv[1:stop][node_index]
-            cmd = [os.path.join(genghis_dir, "init.sh"), node_for_ports]
-            print(" ".join(cmd))
-            subprocess.run(cmd).returncode
+       # if TESTING:
+       #     with open(os.path.join(genghis_dir, "node", "ports.txt") "w") as portsfile:
+       #         
+       #     # Run init.sh to update the permissions required
+       #     node_index = (index + 1) % (len(sys.argv[1:stop]))
+       #     node_for_ports = sys.argv[1:stop][node_index]
+       #     cmd = [os.path.join(genghis_dir, "init.sh"), node_for_ports]
+       #     print(" ".join(cmd))
+       #     subprocess.run(cmd).returncode
       
 
         # start up the judge system in the background, writing output to logs/judge.log
         cmd = ["python3", os.path.join(genghis_dir, "node",  "judge.py")] 
+        if TESTING:
+            cmd.append("t")
         print(" ".join(cmd))
         with open(os.path.join(genghis_dir, "logs", "judge.log"), "w+") as judge_log:
             subprocess.Popen(cmd, stdout=judge_log)
@@ -83,7 +87,7 @@ def reset_node(sn):
     """Clear any game variables that weren't left clean, and get the node ready for a new battle
 
     """
-    global DEBUG
+    global TESTING
     global genghis_dir
     #genghis_dir = os.path.join("/home", sn[0].lower(), sn.lower(), "public_html", "genghis")
     print("Resetting node...")

@@ -2,8 +2,6 @@ $(document).ready(function () {
 // Add in the node details
 
     // Update the `Battles Today` card
-    let ul = document.getElementById("schedule");
-    ul.innerHTML = "";
     const times = [
         "07h50 to 07h55",
         "08h50 to 08h55",
@@ -16,30 +14,60 @@ $(document).ready(function () {
         "15h50 to 15h55",
         "16h50 to 16h55"
     ];
-    const d = new Date();
-    for (let i = 0; i < times.length; i++) {
-        const li = document.createElement("li");
-        li.appendChild(document.createTextNode(times[i]));
-        li.className = "battleTime";
-        if (parseInt(times[i].substring(0, 3)) < d.getHours() ||
-            (parseInt(times[i].substring(0, 3)) === d.getHours() && d.getMinutes() >= 55)) {
-            li.className += " strikeout"
-        }
-        ul.appendChild(li);
-    }
+    let d = new Date();
+  //let ul = document.getElementById("schedule");
+  //ul.innerHTML = "";
+  //for (let i = 0; i < times.length; i++) {
+  //    const li = document.createElement("li");
+  //    li.appendChild(document.createTextNode(times[i]));
+  //    li.className = "battleTime";
+  //    if (parseInt(times[i].substring(0, 3)) < d.getHours() ||
+  //        (parseInt(times[i].substring(0, 3)) === d.getHours() && d.getMinutes() >= 55)) {
+  //        li.className += " strikeout"
+  //    }
+  //    ul.appendChild(li);
+  //}
 
-    // Update the `Status` card
-    let statusCard = document.getElementById('statusCard');
-    statusCard.innerHTML = `<b>Status:</b><br>`;
-    if (d.getMinutes() >= 50 && d.getMinutes() < 55 && d.getHours() <= 16 && d.getHours() >= 7) {
-        statusCard.innerHTML +=
-            `Battle In Progress<br>${55 - d.getMinutes()}m${d.getSeconds()}s left in this round`
-    } else {
-        statusCard.innerHTML += `No Battle right now`
-    }
+  // // Update the `Status` card
+  // let statusCard = document.getElementById('statusCard');
+  // statusCard.innerHTML = `<b>Status:</b><br>`;
+  // if (d.getMinutes() >= 50 && d.getMinutes() < 55 && d.getHours() <= 16 && d.getHours() >= 7) {
+  //     statusCard.innerHTML +=
+  //         `Battle In Progress<br>${55 - d.getMinutes()}m${d.getSeconds()}s left in this round`
+  // } else {
+  //     statusCard.innerHTML += `No Battle right now`
+  // }
 
     // Get the gamestate.json from the server:
     function loadWithGamestate(gamestate) {
+        // Update the Commenary Card
+        let cardCommentary = document.getElementById('cardCommentary');
+        cardCommentary.innerHTML = "";
+        let comments = gamestate['commentary'];
+        let ul = document.createElement('ul');
+        for (let i = 0; i < comments.length; i++) {
+            const li = document.createElement("li");
+            li.appendChild(document.createTextNode(comments[i]));
+            ul.appendChild(li);
+        }
+        cardCommentary.appendChild(ul);
+
+        // Update the Schedule Card
+        ul = document.getElementById("schedule");
+        ul.innerHTML = "";
+        d = new Date();
+        for (let i = 0; i < times.length; i++) {
+            const li = document.createElement("li");
+            li.appendChild(document.createTextNode(times[i]));
+            li.className = "battleTime";
+            if (parseInt(times[i].substring(0, 3)) < d.getHours() ||
+                (parseInt(times[i].substring(0, 3)) === d.getHours() && d.getMinutes() >= 55)) {
+                li.className += " strikeout"
+            }
+            ul.appendChild(li);
+        }
+
+        
 
         // Update the `Status` card
         let statusCard = document.getElementById('statusCard');
@@ -53,6 +81,7 @@ $(document).ready(function () {
         } else {
             statusCard.innerHTML += `No (official) battle right now`
         }
+
 
         // Update the items with Student Number
         let title = document.getElementById("mainTitle");
@@ -112,7 +141,7 @@ $(document).ready(function () {
         b.innerText = "Ports:";
         divPorts.appendChild(b);
 
-        const ul = document.createElement("ul");
+        ul = document.createElement("ul");
         for (let port_key in gamestate['ports']) {
             const li = document.createElement("li");
             // First create and add the normal text

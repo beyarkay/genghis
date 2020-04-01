@@ -7,8 +7,8 @@ import random
 import shutil
 import subprocess
 import time
-
 import requests
+import sys
 
 SPAWN_LOCATIONS = []
 PORT_LOCATIONS = []
@@ -34,7 +34,6 @@ RE_SN = re.compile(r"([BCDFGHJKLMNPQRSTVWXYZ]{3}\w{3}\d{3})")
 node_dir = "/" + os.path.join(*os.path.abspath(__file__).split(os.sep)[:-1])
 genghis_dir = "/" + os.path.join(*os.path.abspath(__file__).split(os.sep)[:-2])
 
-# TODO add in some sort of 'commentary' to explain what's going on (bot moved here, attacked there, ported to there)
 def main():
     global SPAWN_LOCATIONS
     global PORT_LOCATIONS
@@ -52,8 +51,11 @@ def main():
 
     # Load up the registered ports into a list
     gamestate = get_gamestate()
-    with open(os.path.join(genghis_dir, "node", "ports.txt"), "r") as ports_file:
-        ports = [port.strip() for port in ports_file.readlines() if RE_SN.match(port)]
+    if sys.argv[-1] == "t":
+        ports = [gamestate['self']]
+    else:
+        with open(os.path.join(genghis_dir, "node", "ports.txt"), "r") as ports_file:
+            ports = [port.strip() for port in ports_file.readlines() if RE_SN.match(port)]
     random.shuffle(ports)
     random.shuffle(PORT_LOCATIONS) 
     # Add in all the registered ports to the layout and gamestate.
@@ -65,10 +67,10 @@ def main():
             layout[x_pos][y_pos] = ICON_AIR
     if ports:
         raise Exception("{} is not enough PORT icons in layout template; {} ports left undisplayed".format(len(PORT_LOCATIONS), len(ports)))
-
+V
     gamestate['start_time'] = START_TIME.isoformat()
     dump_gamestate(gamestate)
-
+V
     for x_pos, y_pos in SPAWN_LOCATIONS:
         layout[x_pos][y_pos] = ICON_AIR
     dump_layout(layout)
@@ -146,18 +148,27 @@ def add_bot_to_layout(sn):
     layout = get_layout()
 
     inf_loop_count = 0
-    while True:
+    bot_icon = gamestate['bots'][sn]['default_icon']
+    while bot_icon not in "".join(["".join(line) for line in layout]):
         assert SPAWN_LOCATIONS
         x_pos, y_pos = random.choice(SPAWN_LOCATIONS)
         if get_cell((x_pos, y_pos), "") == ICON_AIR:
-            print("Adding {}({}) to map at {}".format(sn, gamestate['bots'][sn]['default_icon'], (x_pos, y_pos)))
+            print("Adding {}({}) to map at {}".format(sn, bot_icon, (x_pos, y_pos)))
             layout[x_pos][y_pos] = gamestate['bots'][sn]['default_icon']
             dump_layout(layout)
+            
+            # Notify the commentary that a bot has been added
+            comment = "{} joined as {}".format(sn, bot_icon)
+            now = datetime.datetime.now().strftime("%H:%M:%S")
+            if 'commentary' not in gamestate.keys():
+                gamestate['commentary'] = []   
+            gamestate['commentary'].insert(0, "{} - {}".format(now, comment))
+            dump_gamestate(gamestate)
             break
         inf_loop_count += 1
         if inf_loop_count > 200:
             layout_string = "\n".join(["".join(list(i)) for i in zip(*layout)])
-            raise Exception("Infinite loop: attempting to add {} to map \n{}".format(sn, layout_string))
+            raise Exception("Infinite loop: attempting to add {} to map {}".format(sn, layout_string))
 
 
 def run():
@@ -225,31 +236,43 @@ def copy_over_bot_files(sn):
         json.dump(data, bot_data, indent=2)
 
 def step_bot(bot_dir):
-    subprocess.run(["python3", os.path.join(bot_dir, "bot.py")])
-    with open(os.path.join(bot_dir, "move.json"), "r") as move_file:
-        bot_move = json.load(move_file)
-    execute_cmd(bot_dir, bot_move)
+    successful = 0 == subprocess.run(["python3", os.path.join(bot_dir, "bot.py")], timeout=1).returncode
+    if not successful:
+        # if the bot failed for some reason, run a null move:
+        print("Bot move for {} was unsuccessful, the bot will stand still".format(bot_dir))
+        bot_move = {
+            "action": "walk", 
+            "direction": ""
+        }
+    else:
+        try:
+            with open(os.path.join(bot_dir, "move.json"), "r") as move_file:
+                bot_move = json.load(move_file)
+        except IOError as error:
+            raise Exception("Error trying to open {}, are you sure the permissions are correct and that your bot.py outputs a move.json file?".format(os.path.join(bot_dir, "move.json")))
 
-
-def execute_cmd(bot_dir, bot_move):
     print("Executing cmd: {} is doing {} {}".format(bot_dir, bot_move['action'], bot_move['direction']))
     sn = bot_dir.split(os.sep)[-1]
-    with open(os.path.join(bot_dir, "data.json"), "r") as statsfile:
-        bot_data = json.load(statsfile)
+    gamestate = get_gamestate()
+    bot_icon = [v['default_icon'] for k, v in gamestate['bots'].items() if k == sn][0]
     layout = get_layout()
 
     bot_loc = (None, None)
     for x, col in enumerate(layout):
         for y, item in enumerate(col):
-            if item == bot_data['default_icon']:
+            if item == bot_icon:
                 bot_loc = (x, y)
                 break
         if bot_loc[0] and bot_loc[1]:
             break
-    assert bot_loc[0] is not None and bot_loc[1] is not None, "bot_data={} and layout=\n{}".format(str(bot_data), "\n".join(["".join(list(i)) for i in zip(*layout)]))
+    assert bot_loc[0] is not None and bot_loc[1] is not None, "layout={}".format("\n".join(["".join(list(i)) for i in zip(*layout)]))
+
     if bot_move['action'] == "walk":
         # Check if the move is legal
-        if (bot_move['direction'] == "l" and bot_loc[0] - 1 >= 0) or \
+        if bot_move['direction'] == "":
+            # No processing is required if the bot is just standing still
+            pass
+        elif (bot_move['direction'] == "l" and bot_loc[0] - 1 >= 0) or \
                 (bot_move['direction'] == "r" and bot_loc[0] + 1 < len(layout)) or \
                 (bot_move['direction'] == "u" and bot_loc[1] - 1 >= 0) or \
                 (bot_move['direction'] == "d" and bot_loc[1] + 1 < len(layout[0])):
@@ -257,22 +280,21 @@ def execute_cmd(bot_dir, bot_move):
             # Process the move, checking to see if the bot_loc will collide with anything of interest
             cell = get_cell(bot_loc, bot_move['direction'])
             if cell == ICON_AIR:
-                move_bot(bot_loc, bot_move['direction'], bot_data['default_icon'])
+                move_bot(bot_loc, bot_move['direction'], bot_icon)
 
             if cell in ICON_COINS:
-                grab_coin(bot_data['student_number'], cell)
-                move_bot(bot_loc, bot_move['direction'], bot_data['default_icon'])
+                grab_coin(sn, cell)
+                move_bot(bot_loc, bot_move['direction'], bot_icon)
 
             elif cell in ICON_PORTS:
+                with open(os.path.join(bot_dir, "data.json"), "r") as datafile:
+                    bot_data = json.load(datafile)
                 port_bot(bot_loc, bot_data, get_cell(bot_loc, bot_move['direction']))
 
     elif bot_move['action'] == "attack":
         # Check if there's a bot_loc in the cell that the bot_loc is attacking
         if get_cell(bot_loc, bot_move['direction']) in ICON_BOTS:
             attack(bot_loc, bot_move['direction'], bot_move['weapon'])
-
-    elif bot_move['action'] == "dump":
-        pass
 
     elif bot_move['action'] == "":
         pass
@@ -297,7 +319,7 @@ def attack(bot_loc, direction, weapon):
 
     """
     gamestate = get_gamestate()
-    print("Gamestate before {} attacks with {}:\n{}".format(bot_loc, weapon, gamestate))
+    print("Gamestate before {} attacks with {}:{}".format(bot_loc, weapon, gamestate))
     defender_icon = get_cell(bot_loc, direction)
     attacker_icon = get_cell(bot_loc, "")
     defender = {}
@@ -334,20 +356,27 @@ def attack(bot_loc, direction, weapon):
                     attacker['coins'][dropped_coin] += 1
                 else:
                     attacker['coins'][dropped_coin] = 1
-        
+                comment = "{} attacked {} with {} and stole 1 x {}".format(attacker['student_number'], defender['student_number'], weapon, dropped_coin)
+            else:
+                comment = "{} attacked {} with {} and destroyed 1 x {}".format(attacker['student_number'], defender['student_number'], weapon, dropped_coin)
+        else:
+            comment = "{0} attacked {1} with {2}, but {1} has no coins".format(attacker['student_number'], defender['student_number'], weapon)
         # Remove the weapon from the attacking bot
         attacker['coins'][weapon] -= 1;
     else:
-        print("Bot {} does not have the weapon {} that it's trying to attack with".format(attacker, weapon))
-    
-    print("Gamestate after {} attacked with {}:\n{}".format(bot_loc, weapon, gamestate))
-    
+        comment = "{} tried to attack {} with a coin it doesn't have ({})".format(attacker['student_number'], defender['student_number'], weapon)
+        print("{} does not have the weapon {} that it's trying to attack with".format(attacker, weapon))
+
+    now = datetime.datetime.now().strftime("%H:%M:%S")
+    if 'commentary' not in gamestate.keys():
+        gamestate['commentary'] = []   
+    gamestate['commentary'].insert(0, "{} - {}".format(now, comment))
     dump_gamestate(gamestate)
 
 def grab_coin(sn, icon):
-    # First update the gamestate, then update the bot's files
     gamestate = get_gamestate()
-
+    
+     
     # Figure out what the coin associated with the given coin_icon is
     for coin_sn, coin_icon in gamestate['coins'].items():
         if icon == coin_icon:
@@ -360,6 +389,13 @@ def grab_coin(sn, icon):
         gamestate['bots'][sn]['coins'][coin] += 1
     else:
         gamestate['bots'][sn]['coins'][coin] = 1
+    
+    
+    now = datetime.datetime.now().strftime("%H:%M:%S")
+    comment = "{} grabbed a coin ({})".format(sn, coin)
+    if 'commentary' not in gamestate.keys():
+        gamestate['commentary'] = []   
+    gamestate['commentary'].insert(0, "{} - {}".format(now, comment))
 
     dump_gamestate(gamestate)
 
@@ -456,18 +492,25 @@ def port_bot(bot_loc, bot_data, port):
 
     # If the port was successful, permenantly delete all the temporary files
     if r.ok:
+        comment = "{} ported to node {}".format(bot_data['student_number'], new_node)
         print("Ported {} from {} to {} (bot_data={})".format(bot_data['student_number'], bot_loc, new_node, bot_data))
         shutil.rmtree(os.path.join(genghis_dir, "bots", "." + bot_data['student_number'].upper()))
     else:
         # else, move all the temporary files back to where they were and raise an error
+        comment = "{} failed to port through {} to {}".format(bot_data['student_number'], port, new_node)
         shutil.move(
             os.path.join(genghis_dir, "bots", "." + bot_data['student_number'].upper()),
             os.path.join(genghis_dir, "bots", bot_data['student_number'].upper())
         )
         layout[bot_loc[0]][bot_loc[1]] = bot_data['default_icon']
         gamestate['bots'][bot_data['student_number']] = tmp_bot
-        dump_gamestate(gamestate)
         dump_layout(layout)
+
+    now = datetime.datetime.now().strftime("%H:%M:%S")
+    if 'commentary' not in gamestate.keys():
+        gamestate['commentary'] = []   
+    gamestate['commentary'].insert(0, "{} - {}".format(now, comment))
+    dump_gamestate(gamestate)
 
 
 def game_is_over():
