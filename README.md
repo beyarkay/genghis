@@ -31,7 +31,7 @@ cd genghis
 cp node/basic_bot.py node/bot.py
 ```
 
-4. Run `init.sh`:
+4. Run `init.sh` to setup your node, and connect it to the network through the node 'KNXBOY001'
 ```
 ./init.sh KNXBOY001
 ```
@@ -160,6 +160,10 @@ drwxr-xr-x 8 knxboy001 knxboy001 4.0K Apr  1 19:00 ..
 ```
 
 ## TODO
+* Add proper communication protocol between nodes:
+    * A proper, bidirectional port system, that doesn't need to be setup by the user
+    * A way to discover the entire graph network
+    * A way to draw the entire graph network
 * Add in a 'commentary' card on the webpage, to explain what's going on
 * Colour each of the bots/ports/coins so they're more distinguishable
 * Get the webpage to update the cards more often

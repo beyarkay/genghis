@@ -10,7 +10,7 @@ fi
 echo "$1" > node/ports.txt
 chmod 700 init.sh start_battle.py README.md node/ports.txt
 chmod 744 -fR index.html node
-chmod 755 .. node node/bouncer.py
+chmod 755 . .. node node/bouncer.py
 
 mkdir -p bots
 chmod 755 -R www vars bots
