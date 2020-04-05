@@ -152,12 +152,12 @@ $(document).ready(function () {
         let battleground = document.getElementById("battleground");
         battleground.innerHTML = "";
         let array = layout_string.split(/\r?\n/);
-
+        console.log(layout_string);
         let valid_bots = [];
         for (k in gamestate['bots']) {
             valid_bots.push(gamestate['bots'][k]['default_icon']);
         }
-        let valid_coins = Object.values(gamestate['coins']);
+        let valid_coins = Object.values(gamestate["coin_map"]);
         let valid_ports = Object.keys(gamestate['ports']);
 
         for (let i = 0; i < array.length; i++) {
@@ -188,8 +188,8 @@ $(document).ready(function () {
                 } else if (valid_coins.includes(array[i].charAt(j))) {
                     const a = document.createElement("a");
                     let sn = "";
-                    for (k in gamestate['coins']) {
-                        if (gamestate['coins'][k] === array[i].charAt(j)){
+                    for (k in gamestate['coin_map']) {
+                        if (gamestate['coin_map'][k] === array[i].charAt(j)){
                             sn = k
                             break;
                         }
