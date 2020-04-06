@@ -12,7 +12,7 @@ import sys
 
 SPAWN_LOCATIONS = []
 PORT_LOCATIONS = []
-COINS_PER_BATTLE = 10
+COINS_PER_BATTLE = 2
 TICK_DURATION = 2
 
 START_TIME = datetime.datetime.now()
@@ -85,12 +85,12 @@ def add_any_new_bots():
     RE_SN = re.compile(r'(\w{6}\d{3})')
     for bot_path in bot_paths:
         gamestate = get_gamestate()
-        with open(os.path.join(genghis_dir, 'logs', bot_path), 'r') as bot_file:
+        with open(bot_path, 'r') as bot_file:
             data = json.load(bot_file)
-
-        bot_sn = list(data['bots'].keys())[0]
+        print("data in add_any_new_bots: \n{}".format(data))
+        bot_sn = data['student_number']
         if bot_sn not in gamestate['bots'].keys() and re.match(RE_SN, bot_sn):
-            gamestate['bots'][bot_sn] = data['bots'][bot_sn]
+            gamestate['bots'][bot_sn] = data
             os.remove(os.path.join(genghis_dir, 'logs', bot_path))
         else:
             print('Invalid/pre-existing bot found in ' + bot_path)
@@ -224,12 +224,12 @@ def copy_over_bot_files(sn):
     # Create a data dictionary for the bot, but don't give that bot access to it's enemy's information
     data = get_gamestate()
     del data['self']
-    if 'coin_map' not in data.keys():
-        data['coin_map'] = data.pop('coins')
-    data.update({k: v for k, v in data['bots'][sn].items()})
-
+    if 'commentary' in data.keys(): 
+        del data['commentary']
+    data['bots'] = {k: v for k, v in data['bots'].items() if k == sn}
     directory = os.path.join(genghis_dir, 'bots', sn)
     shutil.copy(os.path.join(genghis_dir, 'vars', 'layout.txt'), '{}/layout.txt'.format(directory))
+    print('data.json when copying over: {}'.format(data))
     with open(os.path.join(directory, 'data.json'), 'w+') as bot_data:
         json.dump(data, bot_data, indent=2)
 
@@ -274,36 +274,8 @@ def step_bot(bot_dir):
             move_bot(bot_loc, bot_move['direction'], bot_icon)
 
         elif cell in ICON_PORTS:
-            with open(os.path.join(bot_dir, 'data.json'), 'r') as datafile:
-                bot_data = json.load(datafile)
-            port_bot(bot_loc, bot_data, cell)
+            port_bot(bot_loc, sn, cell)
 
-
-
-
-#        # Check if the move is legal
-#        if bot_move['direction'] == '':
-#            # No processing is required if the bot is just standing still
-#            pass
-#        
-#        elif (bot_move['direction'] == 'l' and bot_loc[0] - 1 >= 0) or \
-#                (bot_move['direction'] == 'r' and bot_loc[0] + 1 < len(layout)) or \
-#                (bot_move['direction'] == 'u' and bot_loc[1] - 1 >= 0) or \
-#                (bot_move['direction'] == 'd' and bot_loc[1] + 1 < len(layout[0])):
-#
-#            # Process the move, checking to see if the bot_loc will collide with anything of interest
-#            cell = get_cell(bot_loc, bot_move['direction'])
-#            if cell == ICON_AIR:
-#                move_bot(bot_loc, bot_move['direction'], bot_icon)
-#
-#            elif cell in ICON_COINS:
-#                grab_coin(sn, cell)
-#                move_bot(bot_loc, bot_move['direction'], bot_icon)
-#
-#            elif cell in ICON_PORTS:
-#                with open(os.path.join(bot_dir, 'data.json'), 'r') as datafile:
-#                    bot_data = json.load(datafile)
-#                port_bot(bot_loc, bot_data, cell)
 
     elif bot_move['action'] == 'attack':
         # Check if there's a bot_loc in the cell that the bot_loc is attacking
@@ -491,7 +463,7 @@ def add_coin(sn, n=1):
     dump_layout(layout)
 
 
-def port_bot(bot_loc, bot_data, port):
+def port_bot(bot_loc, sn, port):
     '''Attempt to transport the given bot to the given port (node)
 
     Usually called whne a bot touches a port in the game map.
@@ -504,19 +476,24 @@ def port_bot(bot_loc, bot_data, port):
     '''
     layout = get_layout()
     gamestate = get_gamestate()
-    # We cannot guarantee the bot will be ported, so temporarily remove the bot from the current layout, gamestate and bots/
+    global genghis_dir
+    with open(os.path.join(genghis_dir, 'bots', sn, 'data.json'), 'r') as datafile:
+        bot_data = json.load(datafile)
+    bot_data = bot_data['bots'][sn]
+    print('Bot data being sent to port: \n{}'.format(bot_data))
+    # We cannot guarantee the bot will be ported, so temporarily remove the bot from the current layout, gamestate and bots
     shutil.move(
         os.path.join(genghis_dir, 'bots', bot_data['student_number'].upper()),
         os.path.join(genghis_dir, 'bots', '.' + bot_data['student_number'].upper())
     )
     layout[bot_loc[0]][bot_loc[1]] = ICON_AIR
-    tmp_bot = gamestate['bots'][bot_data['student_number']]
     del gamestate['bots'][bot_data['student_number']]
     dump_gamestate(gamestate)
     dump_layout(layout)
 
     # Attempt to port the bot
     new_node = gamestate['ports'][port]
+    print('Bot data being sent to port: \n{}'.format(bot_data))
     r = requests.post(
         'https://people.cs.uct.ac.za/~{}/genghis/node/requests.php'.format(new_node),
         json=bot_data
@@ -524,7 +501,7 @@ def port_bot(bot_loc, bot_data, port):
 
     # If the port was successful, permenantly delete all the temporary files
     if r.ok:
-        comment = '{} 🛫 to node {}'.format(bot_data['student_number'], new_node)
+        comment = '{} to node {}'.format(bot_data['student_number'], new_node)
         print('Ported {} from {} to {} (bot_data={})'.format(bot_data['student_number'], bot_loc, new_node, bot_data))
         shutil.rmtree(os.path.join(genghis_dir, 'bots', '.' + bot_data['student_number'].upper()))
     else:
@@ -535,7 +512,8 @@ def port_bot(bot_loc, bot_data, port):
             os.path.join(genghis_dir, 'bots', bot_data['student_number'].upper())
         )
         layout[bot_loc[0]][bot_loc[1]] = bot_data['default_icon']
-        gamestate['bots'][bot_data['student_number']] = tmp_bot
+        gamestate['bots'][bot_data['student_number']] = bot_data
+        dump_gamestate(gamestate)
         dump_layout(layout)
 
     add_comment(comment)

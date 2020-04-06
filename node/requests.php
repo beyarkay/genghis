@@ -24,7 +24,4 @@ $log_dir = $genghis_dir.'/logs/requests.log';
 $log = PHP_EOL.date("c").$data.PHP_EOL;
 file_put_contents($log_dir, $log, FILE_APPEND);
 
-
-#unlink("/home/k/knxboy001/public_html/genghis/logs/1584870225.json");
-
 ?>

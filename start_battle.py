@@ -17,26 +17,8 @@ TESTING = False
 DEBUG = False
 def main():
     '''Start a battle on the nodes belonging to the student numbers given as cmdline arguments
-
-    During testing, copy over the KNXBOY001/public_html/genghis directory to the given nodes to make sure they're up to date
-
-    This script will update the nodes given as cmdline args, reset them with some default parameters and start up their judge systems.
-    This is intended to be used for testing only, and mimics what crontab should do on a daily basis
-    
     '''
-#    parser = argparse.ArgumentParser(description='Start a battle between bots on the Genghis battle system')
-#    parser.add_argument(
-#        '--logfile', 
-#        help='A file to log the output of the program to',
-#        default='logs/judge.log'
-#    )
-#    parser.add_argument(
-#        '-i',
-#        '--isolated', 
-#        help='Setup just one node, with one port that is linked to the node itself. Useful for debugging',
-#        action='store_true'
-#    )
-#    args = parser.parse_args()
+
     global TESTING
     global DEBUG
     node_str = []
@@ -83,8 +65,9 @@ def main():
             cmd.append('t')
         print(' '.join(cmd))
         
-        with open(os.path.join(genghis_dir, 'logs', 'judge.log'), 'w+') as judge_log:
-            subprocess.Popen(cmd, stdout=judge_log)
+        subprocess.Popen(cmd) 
+#        with open(os.path.join(genghis_dir, 'logs', 'judge.log'), 'w+') as judge_log:
+#            subprocess.Popen(cmd, stdout=judge_log)
 
     print('\n{} nodes started:\n\t{}'.format(len(sys.argv[1:stop]), '\n\t'.join(node_str)))
 
@@ -120,15 +103,15 @@ def reset_node(sn):
             os.remove(f)
         except:
             print('Error removing file: {}'.format(f))
-    # Now add the current bot to the logs/ directory
 
+    # Now add the current bot to the logs/ directory
     filename = datetime.datetime.now().isoformat() + '.json'
-    bot_data = {k: v for k, v in gamestate.items() if k is not 'self'}
-    bot_data['bots'][sn.upper()] = {
+    bot_data = {
         'student_number': sn.upper(),
         'default_icon': '',
         'coins': {}
     }
+    print("data at start_battle: \n{}".format(bot_data))
     with open(os.path.join(genghis_dir, 'logs', filename), 'w+') as bot_file:
         json.dump(bot_data, bot_file, indent=2)
 
