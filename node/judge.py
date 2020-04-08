@@ -79,6 +79,26 @@ def main():
     add_coin(gamestate['self'], n=COINS_PER_BATTLE)
     run()
 
+def create_network():
+    global genghis_dir
+    with open(os.path.join(genghis_dir, "student_numbers.txt"), "r") as f:
+        sns = [line.strip() for line in f.readlines()]
+    url_fmt = "https://people.cs.uct.ac.za/~{}/genghis/node/requests.php"
+    network = []
+    for sn in sns:
+        url = url.format(sn.upper())
+        headers = {'content-type': 'application/json'}
+        r = requests.post(url, data={}, headers=headers)
+        if r.status_code == 200:
+            network.append(sn)
+
+    for node in network:
+        pass
+
+
+
+
+
 def add_any_new_bots():
     gamestate = get_gamestate()
     bot_paths = glob.glob(os.path.join(genghis_dir, 'logs', '*.json'))
@@ -88,18 +108,21 @@ def add_any_new_bots():
         with open(bot_path, 'r') as bot_file:
             data = json.load(bot_file)
         print("data in add_any_new_bots: \n{}".format(data))
-        bot_sn = data['student_number']
-        if bot_sn not in gamestate['bots'].keys() and re.match(RE_SN, bot_sn):
-            gamestate['bots'][bot_sn] = data
+        try:
+            bot_sn = data['student_number']
+            if bot_sn not in gamestate['bots'].keys() and re.match(RE_SN, bot_sn):
+                gamestate['bots'][bot_sn] = data
+                os.remove(os.path.join(genghis_dir, 'logs', bot_path))
+            else:
+                print('Invalid/pre-existing bot found in ' + bot_path)
+                print('\tBot data={}'.format(data))
+            # Add as directory
+            dump_gamestate(gamestate)
+            add_bot_dir(bot_sn)
+            add_bot_to_layout(bot_sn)
+        except:
+            print("Formatting error when adding bot data: {}".format(data))
             os.remove(os.path.join(genghis_dir, 'logs', bot_path))
-        else:
-            print('Invalid/pre-existing bot found in ' + bot_path)
-            print('\tBot data={}'.format(data))
-        # Add as directory
-        dump_gamestate(gamestate)
-        add_bot_dir(bot_sn)
-        add_bot_to_layout(bot_sn)
-
 
 def add_bot_dir(sn):
     sn = sn.upper()

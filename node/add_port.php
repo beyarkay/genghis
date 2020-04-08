@@ -8,6 +8,7 @@ $genghis_dir = implode("/", array_slice(explode("/", $cwd), 0, -1));
 
 # add the incoming dictionary to file, for the judge system to validate and integrate into the game
 $data = file_get_contents('php://input');
+
 echo count(array_keys((array)$data));
 if (count((array)$data)) {
     $path = $genghis_dir.'/logs/'.date("c").'.json';
